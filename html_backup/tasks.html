@@ -1,0 +1,635 @@
+<!DOCTYPE html>
+<html class="dark" lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>AI Task Manager - FlowMind AI</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&amp;display=swap" rel="stylesheet"/>
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                            "surface-container": "#201f1f",
+                            "surface-container-highest": "#353534",
+                            "secondary-fixed-dim": "#adc6ff",
+                            "tertiary": "#ffb869",
+                            "inverse-on-surface": "#313030",
+                            "tertiary-container": "#ca801e",
+                            "tertiary-fixed-dim": "#ffb869",
+                            "surface-container-high": "#2a2a2a",
+                            "surface-container-low": "#1c1b1b",
+                            "tertiary-fixed": "#ffdcbb",
+                            "on-primary-container": "#340080",
+                            "on-tertiary-container": "#3f2300",
+                            "error": "#ffb4ab",
+                            "surface-container-lowest": "#0e0e0e",
+                            "inverse-primary": "#6d3bd7",
+                            "on-primary-fixed-variant": "#5516be",
+                            "on-secondary-fixed-variant": "#004395",
+                            "surface-dim": "#131313",
+                            "on-tertiary-fixed-variant": "#673d00",
+                            "on-secondary-fixed": "#001a42",
+                            "inverse-surface": "#e5e2e1",
+                            "background": "#131313",
+                            "on-background": "#e5e2e1",
+                            "primary-fixed": "#e9ddff",
+                            "surface-bright": "#3a3939",
+                            "surface": "#131313",
+                            "on-error-container": "#ffdad6",
+                            "on-error": "#690005",
+                            "surface-tint": "#d0bcff",
+                            "error-container": "#93000a",
+                            "on-tertiary-fixed": "#2c1700",
+                            "primary": "#d0bcff",
+                            "on-primary-fixed": "#23005c",
+                            "on-primary": "#3c0091",
+                            "primary-fixed-dim": "#d0bcff",
+                            "on-surface-variant": "#cbc3d7",
+                            "on-secondary": "#002e6a",
+                            "outline-variant": "#494454",
+                            "outline": "#958ea0",
+                            "on-secondary-container": "#e6ecff",
+                            "on-surface": "#e5e2e1",
+                            "secondary-fixed": "#d8e2ff",
+                            "secondary": "#adc6ff",
+                            "primary-container": "#a078ff",
+                            "on-tertiary": "#482900",
+                            "surface-variant": "#353534",
+                            "secondary-container": "#0566d9"
+                    },
+                    "borderRadius": {
+                            "DEFAULT": "1rem",
+                            "lg": "2rem",
+                            "xl": "3rem",
+                            "full": "9999px"
+                    },
+                    "spacing": {
+                            "unit": "8px",
+                            "gutter": "32px",
+                            "section-gap": "120px",
+                            "margin-mobile": "20px",
+                            "container-max": "1280px"
+                    },
+                    "fontFamily": {
+                            "display-xl-mobile": ["Inter"],
+                            "headline-lg-mobile": ["Inter"],
+                            "headline-md": ["Inter"],
+                            "headline-lg": ["Inter"],
+                            "display-xl": ["Inter"],
+                            "body-lg": ["Inter"],
+                            "body-md": ["Inter"],
+                            "label-sm": ["Inter"]
+                    },
+                    "fontSize": {
+                            "display-xl-mobile": ["40px", {"lineHeight": "48px", "letterSpacing": "-0.03em", "fontWeight": "800"}],
+                            "headline-lg-mobile": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                            "headline-md": ["30px", {"lineHeight": "38px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                            "headline-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                            "display-xl": ["72px", {"lineHeight": "80px", "letterSpacing": "-0.04em", "fontWeight": "800"}],
+                            "body-lg": ["18px", {"lineHeight": "28px", "letterSpacing": "0em", "fontWeight": "400"}],
+                            "body-md": ["16px", {"lineHeight": "24px", "letterSpacing": "0em", "fontWeight": "400"}],
+                            "label-sm": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600"}]
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .glass-panel {
+            background: rgba(19, 19, 19, 0.4);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            border-left: 1px solid rgba(255, 255, 255, 0.15);
+        }
+        .glass-card {
+            background-color: rgba(19, 19, 19, 0.4);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-top: 1px solid rgba(255, 255, 255, 0.2);
+            border-left: 1px solid rgba(255, 255, 255, 0.15);
+            transition: all 0.3s ease;
+        }
+        .glass-card:hover {
+            border-color: rgba(208, 188, 255, 0.3);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+        }
+        .glow-bg {
+            position: fixed;
+            top: -20%;
+            left: -10%;
+            width: 120vw;
+            height: 120vh;
+            background: radial-gradient(circle at 30% 30%, rgba(109, 59, 215, 0.15) 0%, transparent 60%),
+                        radial-gradient(circle at 70% 70%, rgba(5, 102, 217, 0.1) 0%, transparent 50%);
+            z-index: -1;
+            pointer-events: none;
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 9999px;
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, #d0bcff 0%, #a078ff 100%);
+            color: #23005c;
+            box-shadow: 0 0 15px rgba(160, 120, 255, 0.5);
+            transition: all 0.3s ease;
+        }
+        .btn-primary:hover {
+            box-shadow: 0 0 25px rgba(160, 120, 255, 0.8);
+            transform: translateY(-1px);
+        }
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #e5e2e1;
+        }
+        .ai-glow-border {
+            position: relative;
+        }
+        .ai-glow-border::before {
+            content: '';
+            position: absolute;
+            inset: -1px;
+            border-radius: inherit;
+            padding: 1px;
+            background: linear-gradient(135deg, rgba(208, 188, 255, 0.6), rgba(5, 102, 217, 0.3));
+            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor;
+            mask-composite: exclude;
+            pointer-events: none;
+        }
+        .view-content {
+            display: none;
+            animation: fadeIn 0.4s ease-out forwards;
+        }
+        .view-content.active {
+            display: block;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .priority-high { color: #ffb4ab; }
+        .priority-medium { color: #ffb869; }
+        .priority-low { color: #adc6ff; }
+    </style>
+</head>
+<body class="bg-background text-on-surface font-body-md h-screen overflow-hidden flex">
+    <!-- Ambient Background -->
+    <div class="glow-bg"></div>
+
+    <!-- Fixed Left Sidebar -->
+    <aside class="w-64 glass-panel h-full flex flex-col justify-between py-6 px-4 shrink-0 hidden md:flex border-r border-white/10 z-10 rounded-r-3xl">
+        <div class="flex flex-col h-full justify-between">
+            <div>
+                <a href="index.html" class="flex items-center gap-3 mb-10 px-2 hover:scale-105 transition-transform inline-flex">
+                    <span class="material-symbols-outlined text-primary text-3xl" style="font-variation-settings: 'FILL' 1;">psychology</span>
+                    <span class="font-headline-md text-headline-md font-bold text-on-surface tracking-tight">FlowMind</span>
+                </a>
+                <nav class="space-y-1">
+                    <!-- Dashboard -->
+                    <a class="flex items-center gap-3 px-4 py-2.5 rounded-full text-on-surface-variant hover:text-primary hover:bg-white/5 transition-all" href="dashboard.html">
+                        <span class="material-symbols-outlined">dashboard</span>
+                        <span class="font-body-md text-sm">Dashboard</span>
+                    </a>
+                    <!-- Tasks (Active) -->
+                    <a class="flex items-center gap-3 px-4 py-2.5 rounded-full bg-primary-container/20 text-primary border border-primary/30 transition-all shadow-[0_0_10px_rgba(208,188,255,0.15)]" href="#">
+                        <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">assignment</span>
+                        <span class="font-body-md font-semibold text-sm">Tasks</span>
+                    </a>
+                    <!-- Calendar -->
+                    <a class="flex items-center gap-3 px-4 py-2.5 rounded-full text-on-surface-variant hover:text-primary hover:bg-white/5 transition-all" href="calendar.html">
+                        <span class="material-symbols-outlined">calendar_month</span>
+                        <span class="font-body-md text-sm">Calendar</span>
+                    </a>
+                    <!-- Documents -->
+                    <a class="flex items-center gap-3 px-4 py-2.5 rounded-full text-on-surface-variant hover:text-primary hover:bg-white/5 transition-all" href="documents.html">
+                        <span class="material-symbols-outlined">description</span>
+                        <span class="font-body-md text-sm">Documents</span>
+                    </a>
+                    <!-- Meetings -->
+                    <a class="flex items-center gap-3 px-4 py-2.5 rounded-full text-on-surface-variant hover:text-primary hover:bg-white/5 transition-all" href="#">
+                        <span class="material-symbols-outlined">video_camera_back</span>
+                        <span class="font-body-md text-sm">Meetings</span>
+                    </a>
+                    <!-- AI Assistant -->
+                    <a class="flex items-center gap-3 px-4 py-2.5 rounded-full text-on-surface-variant hover:text-primary hover:bg-white/5 transition-all" href="assistant.html">
+                        <span class="material-symbols-outlined">chat</span>
+                        <span class="font-body-md text-sm">AI Assistant</span>
+                    </a>
+                    <!-- Team -->
+                    <a class="flex items-center gap-3 px-4 py-2.5 rounded-full text-on-surface-variant hover:text-primary hover:bg-white/5 transition-all" href="#">
+                        <span class="material-symbols-outlined">group</span>
+                        <span class="font-body-md text-sm">Team</span>
+                    </a>
+                </nav>
+            </div>
+            
+            <nav class="space-y-1">
+                <!-- Settings -->
+                <a class="flex items-center gap-3 px-4 py-2.5 rounded-full text-on-surface-variant hover:text-primary hover:bg-white/5 transition-all" href="#">
+                    <span class="material-symbols-outlined">settings</span>
+                    <span class="font-body-md text-sm">Settings</span>
+                </a>
+                <!-- Sign Out -->
+                <a class="flex items-center gap-3 px-4 py-2.5 rounded-full text-on-surface-variant hover:text-red-400 hover:bg-red-500/10 transition-all" href="login.html">
+                    <span class="material-symbols-outlined">logout</span>
+                    <span class="font-body-md text-sm">Sign Out</span>
+                </a>
+            </nav>
+        </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <main class="flex-1 flex flex-col h-full overflow-hidden relative z-0">
+        <!-- Top Navbar -->
+        <header class="h-20 flex items-center justify-between px-6 glass-panel border-b border-white/10 shrink-0 sticky top-0 z-50 rounded-b-3xl mx-4 mt-4">
+            <!-- Mobile Menu Toggle -->
+            <button class="md:hidden text-on-surface">
+                <span class="material-symbols-outlined">menu</span>
+            </button>
+            
+            <!-- Centered Search -->
+            <div class="flex-1 max-w-xl mx-auto hidden md:block">
+                <div class="relative">
+                    <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-on-surface-variant">search</span>
+                    <input class="w-full bg-[#050505] border border-white/10 rounded-full py-2 pl-12 pr-4 text-on-surface focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all font-body-md placeholder-on-surface-variant/50 text-sm" placeholder="Ask AI to find or create a task..." type="text"/>
+                </div>
+            </div>
+            
+            <!-- Right Actions -->
+            <div class="flex items-center gap-4">
+                <button class="relative p-2 text-on-surface-variant hover:text-primary transition-colors">
+                    <span class="material-symbols-outlined">notifications</span>
+                    <span class="absolute top-1.5 right-1.5 w-2 h-2 bg-error rounded-full border border-surface shadow-[0_0_5px_rgba(255,180,171,0.5)]"></span>
+                </button>
+                <div class="flex items-center gap-2 pl-2 border-l border-white/10">
+                    <div class="w-9 h-9 rounded-full bg-surface-container-highest border border-white/20 overflow-hidden shrink-0">
+                        <img alt="User Profile" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAhkx7nJ_kR6dYL4gBEOoEXvzK1c4q5kSRQjxEQHQqPfy2e__lACtu65v4Wh1Mo3tyF3-cf-DfspG6y169mmaBZ4RGH6c-6hxBp0lD_czGh82mJ1Wjn_t-yo9VtYVjtn2akGA8BSvOqQxzkJox8ABnqi9Y1kO9KSTJz9Sk2r2Q2lnN31jlr9P7JZqchC2EygPhPf8CB5htcHStVilxcmV2mVyo5UZmbU0rZSpCgQWOUs-lio_DZ6MmM-5CqPxv7PXXZG0o8MCzsQS6V"/>
+                    </div>
+                    <div class="hidden xl:block text-left text-xs">
+                        <p class="font-semibold text-on-surface">Alex Mercer</p>
+                        <p class="text-on-surface-variant">alex@flowmind.ai</p>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Scrollable Content Canvas -->
+        <div class="flex-1 overflow-y-auto custom-scrollbar p-6">
+            <div class="max-w-container-max mx-auto space-y-6">
+                <!-- Header Title & Switch Buttons -->
+                <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                    <div>
+                        <h1 class="font-display-xl text-2xl md:text-3xl text-on-surface font-bold tracking-tight mb-1">AI Task Manager</h1>
+                        <p class="font-body-md text-sm text-on-surface-variant">Organize and execute project milestones with neural recommendations.</p>
+                    </div>
+                    
+                    <div class="flex items-center gap-3">
+                        <!-- Toggle views -->
+                        <div class="glass-panel p-1 rounded-full flex gap-1 border border-white/10">
+                            <button id="btn-kanban" onclick="switchView('kanban')" class="px-4 py-1.5 rounded-full text-xs font-semibold flex items-center gap-1.5 transition-all text-primary bg-primary-container/20">
+                                <span class="material-symbols-outlined text-[16px]">view_kanban</span>
+                                <span>Board</span>
+                            </button>
+                            <button id="btn-list" onclick="switchView('list')" class="px-4 py-1.5 rounded-full text-xs font-semibold flex items-center gap-1.5 transition-all text-on-surface-variant hover:text-on-surface">
+                                <span class="material-symbols-outlined text-[16px]">list</span>
+                                <span>List</span>
+                            </button>
+                        </div>
+                        <!-- Add Task Button -->
+                        <button onclick="toggleModal(true)" class="btn-primary px-5 py-2 rounded-full font-body-md font-semibold text-sm flex items-center gap-2 hover:scale-105 transition-transform">
+                            <span class="material-symbols-outlined text-[18px]">add</span>
+                            <span>Add Task</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- AI Suggested Tasks Section -->
+                <div class="ai-glow-border glass-panel rounded-3xl p-6 relative overflow-hidden">
+                    <div class="absolute top-0 right-0 w-64 h-64 bg-primary/10 rounded-full blur-[80px] -translate-y-1/2 translate-x-1/4 pointer-events-none"></div>
+                    <div class="flex items-center gap-2 mb-4">
+                        <span class="material-symbols-outlined text-primary">auto_awesome</span>
+                        <h3 class="font-body-lg font-semibold text-on-surface">AI Suggestions</h3>
+                        <span class="text-[10px] bg-primary/10 text-primary border border-primary/20 px-2 py-0.5 rounded-full font-semibold">Extracted from Q3_Analysis.pdf & meetings</span>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                        <!-- Suggestion 1 -->
+                        <div class="glass-card rounded-2xl p-4 flex items-start justify-between gap-3 group">
+                            <div class="min-w-0">
+                                <p class="font-semibold text-sm text-on-surface truncate">Draft follow-up email to Sarah Chen</p>
+                                <p class="text-xs text-on-surface-variant">Related to 'Q3 Marketing Sync'</p>
+                            </div>
+                            <button class="w-8 h-8 rounded-full bg-white/5 hover:bg-primary/20 border border-white/10 flex items-center justify-center text-on-surface-variant hover:text-primary transition-colors shrink-0">
+                                <span class="material-symbols-outlined text-[16px]">add</span>
+                            </button>
+                        </div>
+                        <!-- Suggestion 2 -->
+                        <div class="glass-card rounded-2xl p-4 flex items-start justify-between gap-3 group">
+                            <div class="min-w-0">
+                                <p class="font-semibold text-sm text-on-surface truncate">Review AI integration architecture</p>
+                                <p class="text-xs text-on-surface-variant">Due tomorrow based on roadmap</p>
+                            </div>
+                            <button class="w-8 h-8 rounded-full bg-white/5 hover:bg-primary/20 border border-white/10 flex items-center justify-center text-on-surface-variant hover:text-primary transition-colors shrink-0">
+                                <span class="material-symbols-outlined text-[16px]">add</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Kanban Board View -->
+                <div class="view-content active" id="view-kanban">
+                    <div class="flex gap-6 overflow-x-auto custom-scrollbar pb-4 min-h-[500px]">
+                        <!-- Column: To Do -->
+                        <div class="w-80 flex-shrink-0 flex flex-col gap-4">
+                            <div class="flex items-center justify-between px-2">
+                                <h3 class="font-body-md font-semibold text-on-surface flex items-center gap-2">
+                                    <span class="w-2.5 h-2.5 rounded-full bg-outline-variant"></span>
+                                    <span>To Do</span>
+                                    <span class="text-xs text-on-surface-variant bg-white/5 px-2 py-0.5 rounded-full">2</span>
+                                </h3>
+                                <button class="text-on-surface-variant hover:text-primary"><span class="material-symbols-outlined text-[18px]">more_horiz</span></button>
+                            </div>
+                            <!-- Cards -->
+                            <div class="space-y-4">
+                                <div class="glass-card rounded-2xl p-5 cursor-grab active:cursor-grabbing">
+                                    <div class="flex justify-between items-start mb-3">
+                                        <span class="px-2 py-0.5 rounded bg-secondary-container/20 text-secondary border border-secondary/20 text-[10px] font-semibold">Marketing</span>
+                                        <span class="material-symbols-outlined text-[18px] priority-high" title="High Priority">flag</span>
+                                    </div>
+                                    <h4 class="font-semibold text-sm text-on-surface mb-4 leading-tight">Finalize Q4 Campaign Strategy</h4>
+                                    <div class="flex items-center justify-between pt-3 border-t border-white/5 text-xs">
+                                        <div class="flex items-center gap-1 text-on-surface-variant">
+                                            <span class="material-symbols-outlined text-[14px]">calendar_today</span>
+                                            <span>Oct 29</span>
+                                        </div>
+                                        <div class="w-6 h-6 rounded-full bg-surface-container-highest border border-white/10 overflow-hidden">
+                                            <img alt="Assignee" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAhkx7nJ_kR6dYL4gBEOoEXvzK1c4q5kSRQjxEQHQqPfy2e__lACtu65v4Wh1Mo3tyF3-cf-DfspG6y169mmaBZ4RGH6c-6hxBp0lD_czGh82mJ1Wjn_t-yo9VtYVjtn2akGA8BSvOqQxzkJox8ABnqi9Y1kO9KSTJz9Sk2r2Q2lnN31jlr9P7JZqchC2EygPhPf8CB5htcHStVilxcmV2mVyo5UZmbU0rZSpCgQWOUs-lio_DZ6MmM-5CqPxv7PXXZG0o8MCzsQS6V"/>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Column: In Progress -->
+                        <div class="w-80 flex-shrink-0 flex flex-col gap-4">
+                            <div class="flex items-center justify-between px-2">
+                                <h3 class="font-body-md font-semibold text-on-surface flex items-center gap-2">
+                                    <span class="w-2.5 h-2.5 rounded-full bg-primary animate-pulse"></span>
+                                    <span>In Progress</span>
+                                    <span class="text-xs text-on-surface-variant bg-white/5 px-2 py-0.5 rounded-full">1</span>
+                                </h3>
+                                <button class="text-on-surface-variant hover:text-primary"><span class="material-symbols-outlined text-[18px]">more_horiz</span></button>
+                            </div>
+                            <div class="space-y-4">
+                                <div class="glass-card rounded-2xl p-5 border-l-2 border-l-primary">
+                                    <div class="flex justify-between items-start mb-3">
+                                        <span class="px-2 py-0.5 rounded bg-primary-container/20 text-primary border border-primary/20 text-[10px] font-semibold">AI Integration</span>
+                                        <span class="material-symbols-outlined text-[18px] priority-medium" title="Medium Priority">flag</span>
+                                    </div>
+                                    <h4 class="font-semibold text-sm text-on-surface mb-3 leading-tight">Implement Contextual Memory API</h4>
+                                    <!-- Progress -->
+                                    <div class="mb-4 text-xs">
+                                        <div class="flex justify-between text-on-surface-variant mb-1">
+                                            <span>Progress</span>
+                                            <span class="text-primary font-bold">65%</span>
+                                        </div>
+                                        <div class="w-full bg-white/10 rounded-full h-1.5 overflow-hidden">
+                                            <div class="bg-primary h-1.5 rounded-full" style="width: 65%"></div>
+                                        </div>
+                                    </div>
+                                    <div class="flex items-center justify-between pt-3 border-t border-white/5 text-xs">
+                                        <div class="flex items-center gap-1 text-on-surface-variant">
+                                            <span class="material-symbols-outlined text-[14px]">calendar_today</span>
+                                            <span>Oct 27</span>
+                                        </div>
+                                        <div class="w-6 h-6 rounded-full bg-surface-container-highest border border-white/10 overflow-hidden">
+                                            <img alt="Assignee" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAhkx7nJ_kR6dYL4gBEOoEXvzK1c4q5kSRQjxEQHQqPfy2e__lACtu65v4Wh1Mo3tyF3-cf-DfspG6y169mmaBZ4RGH6c-6hxBp0lD_czGh82mJ1Wjn_t-yo9VtYVjtn2akGA8BSvOqQxzkJox8ABnqi9Y1kO9KSTJz9Sk2r2Q2lnN31jlr9P7JZqchC2EygPhPf8CB5htcHStVilxcmV2mVyo5UZmbU0rZSpCgQWOUs-lio_DZ6MmM-5CqPxv7PXXZG0o8MCzsQS6V"/>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Column: In Review -->
+                        <div class="w-80 flex-shrink-0 flex flex-col gap-4">
+                            <div class="flex items-center justify-between px-2">
+                                <h3 class="font-body-md font-semibold text-on-surface flex items-center gap-2">
+                                    <span class="w-2.5 h-2.5 rounded-full bg-secondary"></span>
+                                    <span>In Review</span>
+                                    <span class="text-xs text-on-surface-variant bg-white/5 px-2 py-0.5 rounded-full font-semibold">1</span>
+                                </h3>
+                                <button class="text-on-surface-variant hover:text-primary"><span class="material-symbols-outlined text-[18px]">more_horiz</span></button>
+                            </div>
+                            <div class="space-y-4">
+                                <div class="glass-card rounded-2xl p-5 border-l-2 border-l-secondary">
+                                    <div class="flex justify-between items-start mb-3">
+                                        <span class="px-2 py-0.5 rounded bg-secondary-container/20 text-secondary border border-secondary/20 text-[10px] font-semibold">Development</span>
+                                        <span class="material-symbols-outlined text-[18px] priority-medium" title="Medium Priority">flag</span>
+                                    </div>
+                                    <h4 class="font-semibold text-sm text-on-surface mb-4 leading-tight">Refactor Auth Middleware</h4>
+                                    <div class="flex items-center justify-between pt-3 border-t border-white/5 text-xs">
+                                        <div class="flex items-center gap-1 text-on-surface-variant">
+                                            <span class="material-symbols-outlined text-[14px]">calendar_today</span>
+                                            <span>Oct 28</span>
+                                        </div>
+                                        <div class="w-6 h-6 rounded-full bg-surface-container-highest border border-white/10 overflow-hidden">
+                                            <img alt="Assignee" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAhkx7nJ_kR6dYL4gBEOoEXvzK1c4q5kSRQjxEQHQqPfy2e__lACtu65v4Wh1Mo3tyF3-cf-DfspG6y169mmaBZ4RGH6c-6hxBp0lD_czGh82mJ1Wjn_t-yo9VtYVjtn2akGA8BSvOqQxzkJox8ABnqi9Y1kO9KSTJz9Sk2r2Q2lnN31jlr9P7JZqchC2EygPhPf8CB5htcHStVilxcmV2mVyo5UZmbU0rZSpCgQWOUs-lio_DZ6MmM-5CqPxv7PXXZG0o8MCzsQS6V"/>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Column: Completed -->
+                        <div class="w-80 flex-shrink-0 flex flex-col gap-4">
+                            <div class="flex items-center justify-between px-2">
+                                <h3 class="font-body-md font-semibold text-on-surface flex items-center gap-2">
+                                    <span class="w-2.5 h-2.5 rounded-full bg-tertiary"></span>
+                                    <span>Completed</span>
+                                    <span class="text-xs text-on-surface-variant bg-white/5 px-2 py-0.5 rounded-full font-semibold">1</span>
+                                </h3>
+                                <button class="text-on-surface-variant hover:text-primary"><span class="material-symbols-outlined text-[18px]">more_horiz</span></button>
+                            </div>
+                            <div class="space-y-4">
+                                <div class="glass-card rounded-2xl p-5 border-l-2 border-l-tertiary opacity-70">
+                                    <div class="flex justify-between items-start mb-3">
+                                        <span class="px-2 py-0.5 rounded bg-tertiary-container/20 text-tertiary border border-tertiary/20 text-[10px] font-semibold">Design System</span>
+                                        <span class="material-symbols-outlined text-[18px] priority-low" title="Low Priority">flag</span>
+                                    </div>
+                                    <h4 class="font-semibold text-sm text-on-surface mb-4 line-through leading-tight">Create Luminous Obsidian Theme</h4>
+                                    <div class="flex items-center justify-between pt-3 border-t border-white/5 text-xs">
+                                        <div class="flex items-center gap-1 text-on-surface-variant">
+                                            <span class="material-symbols-outlined text-[14px]">calendar_today</span>
+                                            <span>Completed</span>
+                                        </div>
+                                        <div class="w-6 h-6 rounded-full bg-surface-container-highest border border-white/10 overflow-hidden">
+                                            <img alt="Assignee" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAhkx7nJ_kR6dYL4gBEOoEXvzK1c4q5kSRQjxEQHQqPfy2e__lACtu65v4Wh1Mo3tyF3-cf-DfspG6y169mmaBZ4RGH6c-6hxBp0lD_czGh82mJ1Wjn_t-yo9VtYVjtn2akGA8BSvOqQxzkJox8ABnqi9Y1kO9KSTJz9Sk2r2Q2lnN31jlr9P7JZqchC2EygPhPf8CB5htcHStVilxcmV2mVyo5UZmbU0rZSpCgQWOUs-lio_DZ6MmM-5CqPxv7PXXZG0o8MCzsQS6V"/>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- List View (Hidden by default) -->
+                <div class="view-content" id="view-list">
+                    <div class="glass-card rounded-3xl overflow-hidden">
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-left border-collapse">
+                                <thead>
+                                    <tr class="border-b border-white/10 text-on-surface-variant font-label-sm text-xs uppercase tracking-wider bg-white/5">
+                                        <th class="p-4 font-semibold">Task Name</th>
+                                        <th class="p-4 font-semibold">Status</th>
+                                        <th class="p-4 font-semibold">Priority</th>
+                                        <th class="p-4 font-semibold">Tags</th>
+                                        <th class="p-4 font-semibold">Due Date</th>
+                                        <th class="p-4 font-semibold">Progress</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="font-body-md text-sm text-on-surface">
+                                    <!-- Row 1 -->
+                                    <tr class="border-b border-white/5 hover:bg-white/5 transition-colors">
+                                        <td class="p-4 font-semibold">Finalize Q4 Campaign Strategy</td>
+                                        <td class="p-4"><span class="px-2.5 py-1 rounded-full bg-white/5 text-on-surface border border-white/10 text-xs">To Do</span></td>
+                                        <td class="p-4"><span class="flex items-center text-xs priority-high"><span class="material-symbols-outlined text-[16px] mr-1">flag</span>High</span></td>
+                                        <td class="p-4"><span class="px-2 py-0.5 rounded bg-secondary-container/20 text-secondary border border-secondary/20 text-[10px]">Marketing</span></td>
+                                        <td class="p-4 text-on-surface-variant text-xs">Oct 29</td>
+                                        <td class="p-4 text-on-surface-variant text-xs">-</td>
+                                    </tr>
+                                    <!-- Row 2 -->
+                                    <tr class="border-b border-white/5 hover:bg-white/5 transition-colors">
+                                        <td class="p-4 font-semibold">Implement Contextual Memory API</td>
+                                        <td class="p-4"><span class="px-2.5 py-1 rounded-full bg-primary/20 text-primary border border-primary/30 text-xs">In Progress</span></td>
+                                        <td class="p-4"><span class="flex items-center text-xs priority-medium"><span class="material-symbols-outlined text-[16px] mr-1">flag</span>Medium</span></td>
+                                        <td class="p-4"><span class="px-2 py-0.5 rounded bg-primary-container/20 text-primary border border-primary/20 text-[10px]">AI Integration</span></td>
+                                        <td class="p-4 text-on-surface-variant text-xs">Oct 27</td>
+                                        <td class="p-4">
+                                            <div class="w-24 bg-white/10 rounded-full h-1.5 overflow-hidden">
+                                                <div class="bg-primary h-1.5 rounded-full" style="width: 65%"></div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <!-- Row 3 -->
+                                    <tr class="border-b border-white/5 hover:bg-white/5 transition-colors">
+                                        <td class="p-4 font-semibold">Refactor Auth Middleware</td>
+                                        <td class="p-4"><span class="px-2.5 py-1 rounded-full bg-secondary-container/20 text-secondary border border-secondary/30 text-xs">In Review</span></td>
+                                        <td class="p-4"><span class="flex items-center text-xs priority-medium"><span class="material-symbols-outlined text-[16px] mr-1">flag</span>Medium</span></td>
+                                        <td class="p-4"><span class="px-2 py-0.5 rounded bg-secondary-container/20 text-secondary border border-secondary/20 text-[10px]">Development</span></td>
+                                        <td class="p-4 text-on-surface-variant text-xs">Oct 28</td>
+                                        <td class="p-4 text-on-surface-variant text-xs">-</td>
+                                    </tr>
+                                    <!-- Row 4 -->
+                                    <tr class="hover:bg-white/5 transition-colors">
+                                        <td class="p-4 font-semibold line-through opacity-70">Create Luminous Obsidian Theme</td>
+                                        <td class="p-4"><span class="px-2.5 py-1 rounded-full bg-tertiary-container/20 text-tertiary border border-tertiary/30 text-xs">Completed</span></td>
+                                        <td class="p-4"><span class="flex items-center text-xs priority-low"><span class="material-symbols-outlined text-[16px] mr-1">flag</span>Low</span></td>
+                                        <td class="p-4"><span class="px-2 py-0.5 rounded bg-tertiary-container/20 text-tertiary border border-tertiary/20 text-[10px]">Design System</span></td>
+                                        <td class="p-4 text-on-surface-variant text-xs">Completed</td>
+                                        <td class="p-4 text-on-surface-variant text-xs">-</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Add Task Modal Overlay (Hidden by default) -->
+    <div id="addTaskModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm hidden">
+        <div class="glass-card rounded-3xl p-8 max-w-md w-full mx-margin-mobile flex flex-col gap-6 relative">
+            <button onclick="toggleModal(false)" class="absolute top-4 right-4 text-on-surface-variant hover:text-on-surface">
+                <span class="material-symbols-outlined">close</span>
+            </button>
+            
+            <h2 class="font-headline-md text-xl font-bold text-on-surface">Create New Task</h2>
+            <form onsubmit="event.preventDefault(); toggleModal(false); alert('Task successfully created (Demo)');" class="flex flex-col gap-4">
+                <!-- Task Title -->
+                <div class="flex flex-col gap-1.5">
+                    <label class="text-xs text-on-surface-variant" for="taskTitle">Task Name</label>
+                    <input id="taskTitle" required class="bg-black/45 border border-white/10 rounded-full px-4 py-2 text-sm focus:outline-none focus:border-primary text-on-surface" placeholder="What needs to be done?" type="text"/>
+                </div>
+                <!-- Priority -->
+                <div class="flex flex-col gap-1.5">
+                    <label class="text-xs text-on-surface-variant" for="taskPriority">Priority</label>
+                    <select id="taskPriority" class="bg-black/45 border border-white/10 rounded-full px-4 py-2 text-sm focus:outline-none focus:border-primary text-on-surface cursor-pointer">
+                        <option value="high">🔥 High</option>
+                        <option value="medium" selected>⚡ Medium</option>
+                        <option value="low">🌱 Low</option>
+                    </select>
+                </div>
+                <!-- Due Date -->
+                <div class="flex flex-col gap-1.5">
+                    <label class="text-xs text-on-surface-variant" for="taskDueDate">Due Date</label>
+                    <input id="taskDueDate" required class="bg-black/45 border border-white/10 rounded-full px-4 py-2 text-sm focus:outline-none focus:border-primary text-on-surface" type="date"/>
+                </div>
+                <!-- Tags -->
+                <div class="flex flex-col gap-1.5">
+                    <label class="text-xs text-on-surface-variant" for="taskTags">Tags</label>
+                    <input id="taskTags" class="bg-black/45 border border-white/10 rounded-full px-4 py-2 text-sm focus:outline-none focus:border-primary text-on-surface" placeholder="e.g. Marketing, AI Integration" type="text"/>
+                </div>
+                
+                <!-- Action Buttons -->
+                <div class="flex gap-3 mt-4 justify-end">
+                    <button type="button" onclick="toggleModal(false)" class="px-5 py-2.5 rounded-full text-xs font-semibold btn-secondary">Cancel</button>
+                    <button type="submit" class="px-5 py-2.5 rounded-full text-xs font-semibold btn-primary text-on-primary">Create Task</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        function switchView(viewName) {
+            const btnKanban = document.getElementById('btn-kanban');
+            const btnList = document.getElementById('btn-list');
+            const viewKanban = document.getElementById('view-kanban');
+            const viewList = document.getElementById('view-list');
+
+            if (viewName === 'kanban') {
+                btnKanban.classList.add('bg-primary-container/20', 'text-primary');
+                btnKanban.classList.remove('text-on-surface-variant');
+                btnList.classList.remove('bg-primary-container/20', 'text-primary');
+                btnList.classList.add('text-on-surface-variant');
+
+                viewKanban.classList.add('active');
+                viewList.classList.remove('active');
+            } else {
+                btnList.classList.add('bg-primary-container/20', 'text-primary');
+                btnList.classList.remove('text-on-surface-variant');
+                btnKanban.classList.remove('bg-primary-container/20', 'text-primary');
+                btnKanban.classList.add('text-on-surface-variant');
+
+                viewList.classList.add('active');
+                viewKanban.classList.remove('active');
+            }
+        }
+
+        function toggleModal(show) {
+            const modal = document.getElementById('addTaskModal');
+            if (show) {
+                modal.classList.remove('hidden');
+            } else {
+                modal.classList.add('hidden');
+            }
+        }
+    </script>
+</body>
+</html>

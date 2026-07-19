@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html class="dark" lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>AI Email Generator - FlowMind AI</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&amp;display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                            "surface-container": "#201f1f",
+                            "surface-container-highest": "#353534",
+                            "secondary-fixed-dim": "#adc6ff",
+                            "tertiary": "#ffb869",
+                            "inverse-on-surface": "#313030",
+                            "tertiary-container": "#ca801e",
+                            "tertiary-fixed-dim": "#ffb869",
+                            "surface-container-high": "#2a2a2a",
+                            "surface-container-low": "#1c1b1b",
+                            "tertiary-fixed": "#ffdcbb",
+                            "on-primary-container": "#340080",
+                            "on-tertiary-container": "#3f2300",
+                            "error": "#ffb4ab",
+                            "surface-container-lowest": "#0e0e0e",
+                            "inverse-primary": "#6d3bd7",
+                            "on-primary-fixed-variant": "#5516be",
+                            "on-secondary-fixed-variant": "#004395",
+                            "surface-dim": "#131313",
+                            "on-tertiary-fixed-variant": "#673d00",
+                            "on-secondary-fixed": "#001a42",
+                            "inverse-surface": "#e5e2e1",
+                            "background": "#131313",
+                            "on-background": "#e5e2e1",
+                            "primary-fixed": "#e9ddff",
+                            "surface-bright": "#3a3939",
+                            "surface": "#131313",
+                            "on-error-container": "#ffdad6",
+                            "on-error": "#690005",
+                            "surface-tint": "#d0bcff",
+                            "error-container": "#93000a",
+                            "on-tertiary-fixed": "#2c1700",
+                            "primary": "#d0bcff",
+                            "on-primary-fixed": "#23005c",
+                            "on-primary": "#3c0091",
+                            "primary-fixed-dim": "#d0bcff",
+                            "on-surface-variant": "#cbc3d7",
+                            "on-secondary": "#002e6a",
+                            "outline-variant": "#494454",
+                            "outline": "#958ea0",
+                            "on-secondary-container": "#e6ecff",
+                            "on-surface": "#e5e2e1",
+                            "secondary-fixed": "#d8e2ff",
+                            "secondary": "#adc6ff",
+                            "primary-container": "#a078ff",
+                            "on-tertiary": "#482900",
+                            "surface-variant": "#353534",
+                            "secondary-container": "#0566d9"
+                    },
+                    "borderRadius": {
+                            "DEFAULT": "1rem",
+                            "lg": "2rem",
+                            "xl": "3rem",
+                            "full": "9999px"
+                    },
+                    "spacing": {
+                            "unit": "8px",
+                            "gutter": "32px",
+                            "section-gap": "120px",
+                            "margin-mobile": "20px",
+                            "container-max": "1280px"
+                    },
+                    "fontFamily": {
+                            "display-xl-mobile": ["Inter"],
+                            "headline-lg-mobile": ["Inter"],
+                            "headline-md": ["Inter"],
+                            "headline-lg": ["Inter"],
+                            "display-xl": ["Inter"],
+                            "body-lg": ["Inter"],
+                            "body-md": ["Inter"],
+                            "label-sm": ["Inter"]
+                    },
+                    "fontSize": {
+                            "display-xl-mobile": ["40px", {"lineHeight": "48px", "letterSpacing": "-0.03em", "fontWeight": "800"}],
+                            "headline-lg-mobile": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                            "headline-md": ["30px", {"lineHeight": "38px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                            "headline-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                            "display-xl": ["72px", {"lineHeight": "80px", "letterSpacing": "-0.04em", "fontWeight": "800"}],
+                            "body-lg": ["18px", {"lineHeight": "28px", "letterSpacing": "0em", "fontWeight": "400"}],
+                            "body-md": ["16px", {"lineHeight": "24px", "letterSpacing": "0em", "fontWeight": "400"}],
+                            "label-sm": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600"}]
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .glass-panel {
+            background: rgba(19, 19, 19, 0.4);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            border-left: 1px solid rgba(255, 255, 255, 0.15);
+        }
+        .glass-card {
+            background-color: rgba(19, 19, 19, 0.4);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-top: 1px solid rgba(255, 255, 255, 0.2);
+            border-left: 1px solid rgba(255, 255, 255, 0.15);
+            transition: all 0.3s ease;
+        }
+        .glass-card:hover {
+            border-color: rgba(208, 188, 255, 0.3);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+        }
+        .glow-bg {
+            position: fixed;
+            top: -20%;
+            left: -10%;
+            width: 120vw;
+            height: 120vh;
+            background: radial-gradient(circle at 30% 30%, rgba(109, 59, 215, 0.15) 0%, transparent 60%),
+                        radial-gradient(circle at 70% 70%, rgba(5, 102, 217, 0.1) 0%, transparent 50%);
+            z-index: -1;
+            pointer-events: none;
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 9999px;
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, #d0bcff 0%, #a078ff 100%);
+            color: #23005c;
+            box-shadow: 0 0 15px rgba(160, 120, 255, 0.5);
+            transition: all 0.3s ease;
+        }
+        .btn-primary:hover {
+            box-shadow: 0 0 25px rgba(160, 120, 255, 0.8);
+            transform: translateY(-1px);
+        }
+        .btn-secondary {
+            background: rgba(53, 53, 52, 0.6);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            transition: all 0.3s ease;
+        }
+        .btn-secondary:hover {
+            background: rgba(73, 68, 84, 0.8);
+            border-color: rgba(255, 255, 255, 0.3);
+        }
+        .input-glass {
+            background: #050505;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: border-color 0.3s ease;
+        }
+        .input-glass:focus {
+            border-color: #d0bcff;
+            outline: none;
+            box-shadow: 0 0 0 1px #d0bcff;
+        }
+        .chip {
+            border: 1px solid rgba(139, 92, 246, 0.3);
+            background: rgba(255,255,255,0.03);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .chip.active {
+            background: #a078ff;
+            color: #131313;
+            border-color: #a078ff;
+            box-shadow: 0 0 10px rgba(160, 120, 255, 0.3);
+        }
+        .custom-radio {
+            appearance: none;
+            width: 16px;
+            height: 16px;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            outline: none;
+            transition: 0.2s;
+            position: relative;
+            margin-right: 8px;
+            cursor: pointer;
+        }
+        .custom-radio:checked {
+            border-color: #d0bcff;
+        }
+        .custom-radio:checked::after {
+            content: '';
+            position: absolute;
+            width: 8px;
+            height: 8px;
+            background: #d0bcff;
+            border-radius: 50%;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+    </style>
+</head>
+<body class="bg-background text-on-surface font-body-md h-screen overflow-hidden flex">
+    <!-- Ambient Background -->
+    <div class="glow-bg"></div>
+
+    <!-- Fixed Left Sidebar -->
+    <aside class="w-64 glass-panel h-full flex flex-col justify-between py-6 px-4 shrink-0 hidden md:flex border-r border-white/10 z-10 rounded-r-3xl">
+        <div class="flex flex-col h-full justify-between">
+            <div>
+                <a href="index.html" class="flex items-center gap-3 mb-10 px-2 hover:scale-105 transition-transform inline-flex">
+                    <span class="material-symbols-outlined text-primary text-3xl" style="font-variation-settings: 'FILL' 1;">psychology</span>
+                    <span class="font-headline-md text-headline-md font-bold text-on-surface tracking-tight">FlowMind</span>
+                </a>
+                <nav class="space-y-1">
+                    <!-- Dashboard -->
+                    <a class="flex items-center gap-3 px-4 py-2.5 rounded-full text-on-surface-variant hover:text-primary hover:bg-white/5 transition-all" href="dashboard.html">
+                        <span class="material-symbols-outlined">dashboard</span>
+                        <span class="font-body-md text-sm">Dashboard</span>
+                    </a>
+                    <!-- Tasks -->
+                    <a class="flex items-center gap-3 px-4 py-2.5 rounded-full text-on-surface-variant hover:text-primary hover:bg-white/5 transition-all" href="tasks.html">
+                        <span class="material-symbols-outlined">assignment</span>
+                        <span class="font-body-md text-sm">Tasks</span>
+                    </a>
+                    <!-- Calendar -->
+                    <a class="flex items-center gap-3 px-4 py-2.5 rounded-full text-on-surface-variant hover:text-primary hover:bg-white/5 transition-all" href="calendar.html">
+                        <span class="material-symbols-outlined">calendar_month</span>
+                        <span class="font-body-md text-sm">Calendar</span>
+                    </a>
+                    <!-- Documents -->
+                    <a class="flex items-center gap-3 px-4 py-2.5 rounded-full text-on-surface-variant hover:text-primary hover:bg-white/5 transition-all" href="documents.html">
+                        <span class="material-symbols-outlined">description</span>
+                        <span class="font-body-md text-sm">Documents</span>
+                    </a>
+                    <!-- Meetings -->
+                    <a class="flex items-center gap-3 px-4 py-2.5 rounded-full text-on-surface-variant hover:text-primary hover:bg-white/5 transition-all" href="meetings.html">
+                        <span class="material-symbols-outlined">video_camera_back</span>
+                        <span class="font-body-md text-sm">Meetings</span>
+                    </a>
+                    <!-- AI Assistant (Active wrapper or highlights) -->
+                    <a class="flex items-center gap-3 px-4 py-2.5 rounded-full bg-primary-container/20 text-primary border border-primary/30 transition-all shadow-[0_0_10px_rgba(208,188,255,0.15)]" href="assistant.html">
+                        <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">chat</span>
+                        <span class="font-body-md font-semibold text-sm">AI Assistant</span>
+                    </a>
+                    <!-- Team -->
+                    <a class="flex items-center gap-3 px-4 py-2.5 rounded-full text-on-surface-variant hover:text-primary hover:bg-white/5 transition-all" href="#">
+                        <span class="material-symbols-outlined">group</span>
+                        <span class="font-body-md text-sm">Team</span>
+                    </a>
+                </nav>
+            </div>
+            
+            <nav class="space-y-1">
+                <!-- Settings -->
+                <a class="flex items-center gap-3 px-4 py-2.5 rounded-full text-on-surface-variant hover:text-primary hover:bg-white/5 transition-all" href="#">
+                    <span class="material-symbols-outlined">settings</span>
+                    <span class="font-body-md text-sm">Settings</span>
+                </a>
+                <!-- Sign Out -->
+                <a class="flex items-center gap-3 px-4 py-2.5 rounded-full text-on-surface-variant hover:text-red-400 hover:bg-red-500/10 transition-all" href="login.html">
+                    <span class="material-symbols-outlined">logout</span>
+                    <span class="font-body-md text-sm">Sign Out</span>
+                </a>
+            </nav>
+        </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <main class="flex-grow flex flex-col h-full overflow-hidden relative z-0">
+        <!-- Top Navbar -->
+        <header class="h-20 flex items-center justify-between px-6 glass-card border-b border-white/10 shrink-0 sticky top-0 z-50 rounded-b-3xl mx-4 mt-4">
+            <!-- Mobile Menu Toggle -->
+            <button class="md:hidden text-on-surface">
+                <span class="material-symbols-outlined">menu</span>
+            </button>
+            
+            <!-- Centered Search -->
+            <div class="flex-1 max-w-xl mx-auto hidden md:block">
+                <div class="relative">
+                    <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-on-surface-variant">search</span>
+                    <input class="w-full bg-[#050505] border border-white/10 rounded-full py-2 pl-12 pr-4 text-on-surface focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all font-body-md placeholder-on-surface-variant/50 text-sm" placeholder="Search templates, inputs, drafts..." type="text"/>
+                </div>
+            </div>
+            
+            <!-- Right Actions -->
+            <div class="flex items-center gap-4">
+                <button class="relative p-2 text-on-surface-variant hover:text-primary transition-colors">
+                    <span class="material-symbols-outlined">notifications</span>
+                    <span class="absolute top-1.5 right-1.5 w-2 h-2 bg-error rounded-full border border-surface shadow-[0_0_5px_rgba(255,180,171,0.5)]"></span>
+                </button>
+                <div class="flex items-center gap-2 pl-2 border-l border-white/10">
+                    <div class="w-9 h-9 rounded-full bg-surface-container-highest border border-white/20 overflow-hidden shrink-0">
+                        <img alt="User Profile" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAhkx7nJ_kR6dYL4gBEOoEXvzK1c4q5kSRQjxEQHQqPfy2e__lACtu65v4Wh1Mo3tyF3-cf-DfspG6y169mmaBZ4RGH6c-6hxBp0lD_czGh82mJ1Wjn_t-yo9VtYVjtn2akGA8BSvOqQxzkJox8ABnqi9Y1kO9KSTJz9Sk2r2Q2lnN31jlr9P7JZqchC2EygPhPf8CB5htcHStVilxcmV2mVyo5UZmbU0rZSpCgQWOUs-lio_DZ6MmM-5CqPxv7PXXZG0o8MCzsQS6V"/>
+                    </div>
+                    <div class="hidden xl:block text-left text-xs">
+                        <p class="font-semibold text-on-surface">Alex Mercer</p>
+                        <p class="text-on-surface-variant">alex@flowmind.ai</p>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Scrollable Dashboard Content -->
+        <div class="flex-1 overflow-y-auto custom-scrollbar p-6">
+            <div class="max-w-container-max mx-auto space-y-6">
+                <!-- Page Header -->
+                <div class="mb-4">
+                    <h1 class="font-display-xl text-2xl md:text-3xl text-on-surface font-bold tracking-tight mb-1 flex items-center gap-2">
+                        <span class="material-symbols-outlined text-primary text-3xl">auto_awesome</span>
+                        <span>AI Email Generator</span>
+                    </h1>
+                    <p class="text-sm text-on-surface-variant">Draft high-impact professional emails in seconds. Customize tone, length, and context using our generative models.</p>
+                </div>
+
+                <!-- Main Workspace Grid -->
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+                    <!-- Left Column: Generator Controls -->
+                    <div class="lg:col-span-5 space-y-6">
+                        <!-- Prompt Input -->
+                        <div class="glass-panel rounded-3xl p-5">
+                            <label class="block text-xs font-semibold text-on-surface-variant mb-2 uppercase tracking-wide">Email Prompt</label>
+                            <textarea id="email-prompt" class="w-full h-32 input-glass rounded-2xl p-4 text-xs text-on-surface font-body-md resize-none" placeholder="Describe what you want to write... e.g., Draft a follow-up email to the design team asking for Q4 style specs updates by next Friday."></textarea>
+                        </div>
+                        
+                        <!-- Tone Selector Chips -->
+                        <div class="glass-panel rounded-3xl p-5">
+                            <label class="block text-xs font-semibold text-on-surface-variant mb-3 uppercase tracking-wide">Tone &amp; Style</label>
+                            <div class="flex flex-wrap gap-2" id="tone-chips">
+                                <button class="chip active px-3.5 py-1.5 rounded-full text-xs font-semibold">Professional</button>
+                                <button class="chip px-3.5 py-1.5 rounded-full text-xs font-semibold text-on-surface-variant">Friendly</button>
+                                <button class="chip px-3.5 py-1.5 rounded-full text-xs font-semibold text-on-surface-variant">Assertive</button>
+                                <button class="chip px-3.5 py-1.5 rounded-full text-xs font-semibold text-on-surface-variant">Casual</button>
+                                <button class="chip px-3.5 py-1.5 rounded-full text-xs font-semibold text-on-surface-variant border-error text-error/80 hover:bg-error/10">Urgent</button>
+                            </div>
+                        </div>
+
+                        <!-- Details (Length & Context) -->
+                        <div class="glass-panel rounded-3xl p-5 space-y-4">
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                <!-- Length Selection -->
+                                <div>
+                                    <label class="block text-xs font-semibold text-on-surface-variant mb-3 uppercase tracking-wide">Length</label>
+                                    <div class="space-y-2">
+                                        <label class="flex items-center cursor-pointer group">
+                                            <input class="custom-radio" name="length" type="radio"/>
+                                            <span class="text-xs text-on-surface group-hover:text-primary transition-colors">Short &amp; Punchy</span>
+                                        </label>
+                                        <label class="flex items-center cursor-pointer group">
+                                            <input checked="" class="custom-radio" name="length" type="radio"/>
+                                            <span class="text-xs text-on-surface group-hover:text-primary transition-colors">Medium</span>
+                                        </label>
+                                        <label class="flex items-center cursor-pointer group">
+                                            <input class="custom-radio" name="length" type="radio"/>
+                                            <span class="text-xs text-on-surface group-hover:text-primary transition-colors">Detailed</span>
+                                        </label>
+                                    </div>
+                                </div>
+                                <!-- File Dropzone Context -->
+                                <div>
+                                    <label class="block text-xs font-semibold text-on-surface-variant mb-3 uppercase tracking-wide">Context Files</label>
+                                    <div onclick="alert('Upload context file simulation')" class="border border-dashed border-white/20 rounded-2xl h-20 flex flex-col items-center justify-center bg-white/5 hover:bg-white/10 transition-colors cursor-pointer group">
+                                        <span class="material-symbols-outlined text-on-surface-variant group-hover:text-primary mb-1 text-md">upload_file</span>
+                                        <span class="text-[10px] text-on-surface-variant group-hover:text-on-surface font-semibold">Drag &amp; Drop</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Generate Button -->
+                        <button onclick="simulateGenerate()" class="w-full btn-primary rounded-full py-3 flex items-center justify-center gap-2 text-xs font-bold tracking-wide relative overflow-hidden group">
+                            <span class="material-symbols-outlined text-md">magic_button</span>
+                            <span>GENERATE DRAFT</span>
+                        </button>
+                    </div>
+
+                    <!-- Right Column: Generated Email Preview -->
+                    <div class="lg:col-span-7">
+                        <div class="glass-panel rounded-3xl h-full flex flex-col overflow-hidden relative min-h-[480px]">
+                            <!-- Composer Header -->
+                            <div class="bg-black/40 border-b border-white/10 p-4 space-y-3 shrink-0">
+                                <div class="flex items-center gap-3 border-b border-white/5 pb-2 text-xs">
+                                    <span class="text-on-surface-variant w-10 font-bold">To:</span>
+                                    <input class="bg-transparent border-none text-on-surface w-full focus:ring-0 p-0 text-xs" type="text" value="design-team@flowmind.ai"/>
+                                </div>
+                                <div class="flex items-center gap-3 text-xs">
+                                    <span class="text-on-surface-variant w-10 font-bold">Subject:</span>
+                                    <input id="email-subject" class="bg-transparent border-none text-primary w-full focus:ring-0 p-0 text-xs font-semibold" type="text" value="Action Required: Q4 Design System Specs Update"/>
+                                </div>
+                            </div>
+
+                            <!-- Composer Body -->
+                            <div class="flex-grow p-5 relative">
+                                <!-- Loading overlay -->
+                                <div id="composer-loading" class="absolute inset-0 bg-[#131313]/90 backdrop-blur-sm z-10 flex flex-col items-center justify-center hidden rounded-b-3xl">
+                                    <div class="w-12 h-12 border-4 border-white/10 border-t-primary rounded-full animate-spin mb-3"></div>
+                                    <span class="text-xs text-primary animate-pulse font-semibold">Generating neural response...</span>
+                                </div>
+                                <div id="email-body" class="w-full h-full text-xs text-on-surface leading-relaxed focus:outline-none min-h-[300px] whitespace-pre-line" contenteditable="true">Hi Design Team,
+
+I hope this email finds you well.
+
+Following up on our recent sync, I'd like to kindly remind everyone about the upcoming deadline for the Q4 Design System Specs Update.
+
+Please ensure the following actions are completed by Friday EOD:
+• Review and finalize all new typography tokens in the Figma master file.
+• Audit the primary color gradient applications across the Dashboard component set.
+• Update the component documentation with the latest accessibility guidelines.
+
+Your timely attention to this is crucial for maintaining our development velocity heading into the next sprint.
+
+Let me know if you are facing any blockers.
+
+Best regards,
+Alex Mercer</div>
+                            </div>
+
+                            <!-- Composer Footer Action Row -->
+                            <div class="bg-black/20 border-t border-white/10 p-4 flex justify-between items-center shrink-0">
+                                <div class="flex gap-2">
+                                    <button onclick="copyToClipboard()" class="btn-secondary w-9 h-9 rounded-full flex items-center justify-center text-on-surface-variant hover:text-white relative group border border-white/10">
+                                        <span class="material-symbols-outlined text-sm">content_copy</span>
+                                        <span id="copy-tooltip" class="absolute -top-9 left-1/2 -translate-x-1/2 bg-surface-container-high border border-white/10 text-[9px] px-2 py-0.5 rounded opacity-0 transition-opacity pointer-events-none whitespace-nowrap">Copied!</span>
+                                    </button>
+                                    <button onclick="alert('Email dispatched directly via mail gateway')" class="btn-secondary w-9 h-9 rounded-full flex items-center justify-center text-on-surface-variant hover:text-white border border-white/10">
+                                        <span class="material-symbols-outlined text-sm">send</span>
+                                    </button>
+                                </div>
+                                <button onclick="simulateGenerate()" class="btn-secondary px-5 py-2 rounded-full text-xs font-semibold text-on-surface flex items-center gap-1.5 border border-white/10">
+                                    <span class="material-symbols-outlined text-sm">refresh</span>
+                                    <span>Regenerate Draft</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Tone Chip Toggling
+            const chips = document.querySelectorAll('#tone-chips .chip');
+            chips.forEach(chip => {
+                chip.addEventListener('click', () => {
+                    chips.forEach(c => {
+                        c.classList.remove('active');
+                        c.classList.add('text-on-surface-variant');
+                    });
+                    chip.classList.add('active');
+                    chip.classList.remove('text-on-surface-variant');
+                });
+            });
+        });
+
+        function simulateGenerate() {
+            const overlay = document.getElementById('composer-loading');
+            const promptVal = document.getElementById('email-prompt').value.trim();
+            overlay.classList.remove('hidden');
+
+            setTimeout(() => {
+                overlay.classList.add('hidden');
+                
+                // Change email preview text depending on prompt
+                const bodyText = document.getElementById('email-body');
+                const subject = document.getElementById('email-subject');
+                
+                if (promptVal) {
+                    subject.value = "Follow-up: Workspace Synchronization Tasks";
+                    bodyText.innerHTML = `Hi Team,\n\nI am following up on: "${promptVal}".\n\nPlease let me know if you can complete this task by early next week. Your input will ensure our launch runs smoothly.\n\nThanks,\nAlex Mercer`;
+                } else {
+                    subject.value = "Action Required: Q4 Design System Specs Update";
+                    bodyText.innerHTML = `Hi Design Team,\n\nI hope this email finds you well.\n\nFollowing up on our recent sync, I'd like to kindly remind everyone about the upcoming deadline for the Q4 Design System Specs Update.\n\nBest regards,\nAlex Mercer`;
+                }
+            }, 1200);
+        }
+
+        function copyToClipboard() {
+            const bodyText = document.getElementById('email-body').innerText;
+            navigator.clipboard.writeText(bodyText).then(() => {
+                const tooltip = document.getElementById('copy-tooltip');
+                tooltip.classList.remove('opacity-0');
+                setTimeout(() => {
+                    tooltip.classList.add('opacity-0');
+                }, 1500);
+            });
+        }
+    </script>
+</body>
+</html>

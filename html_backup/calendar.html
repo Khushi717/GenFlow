@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html class="dark" lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>Smart Calendar - FlowMind AI</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&amp;display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                            "surface-container": "#201f1f",
+                            "surface-container-highest": "#353534",
+                            "secondary-fixed-dim": "#adc6ff",
+                            "tertiary": "#ffb869",
+                            "inverse-on-surface": "#313030",
+                            "tertiary-container": "#ca801e",
+                            "tertiary-fixed-dim": "#ffb869",
+                            "surface-container-high": "#2a2a2a",
+                            "surface-container-low": "#1c1b1b",
+                            "tertiary-fixed": "#ffdcbb",
+                            "on-primary-container": "#340080",
+                            "on-tertiary-container": "#3f2300",
+                            "error": "#ffb4ab",
+                            "surface-container-lowest": "#0e0e0e",
+                            "inverse-primary": "#6d3bd7",
+                            "on-primary-fixed-variant": "#5516be",
+                            "on-secondary-fixed-variant": "#004395",
+                            "surface-dim": "#131313",
+                            "on-tertiary-fixed-variant": "#673d00",
+                            "on-secondary-fixed": "#001a42",
+                            "inverse-surface": "#e5e2e1",
+                            "background": "#131313",
+                            "on-background": "#e5e2e1",
+                            "primary-fixed": "#e9ddff",
+                            "surface-bright": "#3a3939",
+                            "surface": "#131313",
+                            "on-error-container": "#ffdad6",
+                            "on-error": "#690005",
+                            "surface-tint": "#d0bcff",
+                            "error-container": "#93000a",
+                            "on-tertiary-fixed": "#2c1700",
+                            "primary": "#d0bcff",
+                            "on-primary-fixed": "#23005c",
+                            "on-primary": "#3c0091",
+                            "primary-fixed-dim": "#d0bcff",
+                            "on-surface-variant": "#cbc3d7",
+                            "on-secondary": "#002e6a",
+                            "outline-variant": "#494454",
+                            "outline": "#958ea0",
+                            "on-secondary-container": "#e6ecff",
+                            "on-surface": "#e5e2e1",
+                            "secondary-fixed": "#d8e2ff",
+                            "secondary": "#adc6ff",
+                            "primary-container": "#a078ff",
+                            "on-tertiary": "#482900",
+                            "surface-variant": "#353534",
+                            "secondary-container": "#0566d9"
+                    },
+                    "borderRadius": {
+                            "DEFAULT": "1rem",
+                            "lg": "2rem",
+                            "xl": "3rem",
+                            "full": "9999px"
+                    },
+                    "spacing": {
+                            "unit": "8px",
+                            "gutter": "32px",
+                            "section-gap": "120px",
+                            "margin-mobile": "20px",
+                            "container-max": "1280px"
+                    },
+                    "fontFamily": {
+                            "display-xl-mobile": ["Inter"],
+                            "headline-lg-mobile": ["Inter"],
+                            "headline-md": ["Inter"],
+                            "headline-lg": ["Inter"],
+                            "display-xl": ["Inter"],
+                            "body-lg": ["Inter"],
+                            "body-md": ["Inter"],
+                            "label-sm": ["Inter"]
+                    },
+                    "fontSize": {
+                            "display-xl-mobile": ["40px", {"lineHeight": "48px", "letterSpacing": "-0.03em", "fontWeight": "800"}],
+                            "headline-lg-mobile": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                            "headline-md": ["30px", {"lineHeight": "38px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                            "headline-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                            "display-xl": ["72px", {"lineHeight": "80px", "letterSpacing": "-0.04em", "fontWeight": "800"}],
+                            "body-lg": ["18px", {"lineHeight": "28px", "letterSpacing": "0em", "fontWeight": "400"}],
+                            "body-md": ["16px", {"lineHeight": "24px", "letterSpacing": "0em", "fontWeight": "400"}],
+                            "label-sm": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600"}]
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .glass-panel {
+            background: rgba(19, 19, 19, 0.4);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            border-left: 1px solid rgba(255, 255, 255, 0.15);
+        }
+        .glass-card {
+            background-color: rgba(19, 19, 19, 0.4);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-top: 1px solid rgba(255, 255, 255, 0.2);
+            border-left: 1px solid rgba(255, 255, 255, 0.15);
+            transition: all 0.3s ease;
+        }
+        .glass-card:hover {
+            border-color: rgba(208, 188, 255, 0.3);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+        }
+        .glow-bg {
+            position: fixed;
+            top: -20%;
+            left: -10%;
+            width: 120vw;
+            height: 120vh;
+            background: radial-gradient(circle at 30% 30%, rgba(109, 59, 215, 0.15) 0%, transparent 60%),
+                        radial-gradient(circle at 70% 70%, rgba(5, 102, 217, 0.1) 0%, transparent 50%);
+            z-index: -1;
+            pointer-events: none;
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 9999px;
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, #d0bcff 0%, #a078ff 100%);
+            color: #23005c;
+            box-shadow: 0 0 15px rgba(160, 120, 255, 0.5);
+            transition: all 0.3s ease;
+        }
+        .btn-primary:hover {
+            box-shadow: 0 0 25px rgba(160, 120, 255, 0.8);
+            transform: translateY(-1px);
+        }
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #e5e2e1;
+        }
+        .calendar-glow {
+            box-shadow: 0px 0px 20px rgba(208, 188, 255, 0.3);
+        }
+        .modal-overlay {
+            background: rgba(10, 10, 10, 0.8);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+        }
+    </style>
+</head>
+<body class="bg-background text-on-surface font-body-md h-screen overflow-hidden flex">
+    <!-- Ambient Background -->
+    <div class="glow-bg"></div>
+
+    <!-- Fixed Left Sidebar -->
+    <aside class="w-64 glass-panel h-full flex flex-col justify-between py-6 px-4 shrink-0 hidden md:flex border-r border-white/10 z-10 rounded-r-3xl">
+        <div class="flex flex-col h-full justify-between">
+            <div>
+                <a href="index.html" class="flex items-center gap-3 mb-10 px-2 hover:scale-105 transition-transform inline-flex">
+                    <span class="material-symbols-outlined text-primary text-3xl" style="font-variation-settings: 'FILL' 1;">psychology</span>
+                    <span class="font-headline-md text-headline-md font-bold text-on-surface tracking-tight">FlowMind</span>
+                </a>
+                <nav class="space-y-1">
+                    <!-- Dashboard -->
+                    <a class="flex items-center gap-3 px-4 py-2.5 rounded-full text-on-surface-variant hover:text-primary hover:bg-white/5 transition-all" href="dashboard.html">
+                        <span class="material-symbols-outlined">dashboard</span>
+                        <span class="font-body-md text-sm">Dashboard</span>
+                    </a>
+                    <!-- Tasks -->
+                    <a class="flex items-center gap-3 px-4 py-2.5 rounded-full text-on-surface-variant hover:text-primary hover:bg-white/5 transition-all" href="tasks.html">
+                        <span class="material-symbols-outlined">assignment</span>
+                        <span class="font-body-md text-sm">Tasks</span>
+                    </a>
+                    <!-- Calendar (Active) -->
+                    <a class="flex items-center gap-3 px-4 py-2.5 rounded-full bg-primary-container/20 text-primary border border-primary/30 transition-all shadow-[0_0_10px_rgba(208,188,255,0.15)]" href="#">
+                        <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">calendar_month</span>
+                        <span class="font-body-md font-semibold text-sm">Calendar</span>
+                    </a>
+                    <!-- Documents -->
+                    <a class="flex items-center gap-3 px-4 py-2.5 rounded-full text-on-surface-variant hover:text-primary hover:bg-white/5 transition-all" href="documents.html">
+                        <span class="material-symbols-outlined">description</span>
+                        <span class="font-body-md text-sm">Documents</span>
+                    </a>
+                    <!-- Meetings -->
+                    <a class="flex items-center gap-3 px-4 py-2.5 rounded-full text-on-surface-variant hover:text-primary hover:bg-white/5 transition-all" href="#">
+                        <span class="material-symbols-outlined">video_camera_back</span>
+                        <span class="font-body-md text-sm">Meetings</span>
+                    </a>
+                    <!-- AI Assistant -->
+                    <a class="flex items-center gap-3 px-4 py-2.5 rounded-full text-on-surface-variant hover:text-primary hover:bg-white/5 transition-all" href="assistant.html">
+                        <span class="material-symbols-outlined">chat</span>
+                        <span class="font-body-md text-sm">AI Assistant</span>
+                    </a>
+                    <!-- Team -->
+                    <a class="flex items-center gap-3 px-4 py-2.5 rounded-full text-on-surface-variant hover:text-primary hover:bg-white/5 transition-all" href="#">
+                        <span class="material-symbols-outlined">group</span>
+                        <span class="font-body-md text-sm">Team</span>
+                    </a>
+                </nav>
+            </div>
+            
+            <nav class="space-y-1">
+                <!-- Settings -->
+                <a class="flex items-center gap-3 px-4 py-2.5 rounded-full text-on-surface-variant hover:text-primary hover:bg-white/5 transition-all" href="#">
+                    <span class="material-symbols-outlined">settings</span>
+                    <span class="font-body-md text-sm">Settings</span>
+                </a>
+                <!-- Sign Out -->
+                <a class="flex items-center gap-3 px-4 py-2.5 rounded-full text-on-surface-variant hover:text-red-400 hover:bg-red-500/10 transition-all" href="login.html">
+                    <span class="material-symbols-outlined">logout</span>
+                    <span class="font-body-md text-sm">Sign Out</span>
+                </a>
+            </nav>
+        </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <main class="flex-1 flex flex-col h-full overflow-hidden relative z-0">
+        <!-- Top Navbar -->
+        <header class="h-20 flex items-center justify-between px-6 glass-card border-b border-white/10 shrink-0 sticky top-0 z-50 rounded-b-3xl mx-4 mt-4">
+            <!-- Mobile Menu Toggle -->
+            <button class="md:hidden text-on-surface">
+                <span class="material-symbols-outlined">menu</span>
+            </button>
+            
+            <!-- Centered Search -->
+            <div class="flex-1 max-w-xl mx-auto hidden md:block">
+                <div class="relative">
+                    <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-on-surface-variant">search</span>
+                    <input class="w-full bg-[#050505] border border-white/10 rounded-full py-2 pl-12 pr-4 text-on-surface focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all font-body-md placeholder-on-surface-variant/50 text-sm" placeholder="Search calendar, events, or ask AI..." type="text"/>
+                </div>
+            </div>
+            
+            <!-- Right Actions -->
+            <div class="flex items-center gap-4">
+                <button class="relative p-2 text-on-surface-variant hover:text-primary transition-colors">
+                    <span class="material-symbols-outlined">notifications</span>
+                    <span class="absolute top-1.5 right-1.5 w-2 h-2 bg-error rounded-full border border-surface shadow-[0_0_5px_rgba(255,180,171,0.5)]"></span>
+                </button>
+                <div class="flex items-center gap-2 pl-2 border-l border-white/10">
+                    <div class="w-9 h-9 rounded-full bg-surface-container-highest border border-white/20 overflow-hidden shrink-0">
+                        <img alt="User Profile" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAhkx7nJ_kR6dYL4gBEOoEXvzK1c4q5kSRQjxEQHQqPfy2e__lACtu65v4Wh1Mo3tyF3-cf-DfspG6y169mmaBZ4RGH6c-6hxBp0lD_czGh82mJ1Wjn_t-yo9VtYVjtn2akGA8BSvOqQxzkJox8ABnqi9Y1kO9KSTJz9Sk2r2Q2lnN31jlr9P7JZqchC2EygPhPf8CB5htcHStVilxcmV2mVyo5UZmbU0rZSpCgQWOUs-lio_DZ6MmM-5CqPxv7PXXZG0o8MCzsQS6V"/>
+                    </div>
+                    <div class="hidden xl:block text-left text-xs">
+                        <p class="font-semibold text-on-surface">Alex Mercer</p>
+                        <p class="text-on-surface-variant">alex@flowmind.ai</p>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Scrollable Dashboard Content -->
+        <div class="flex-1 overflow-y-auto custom-scrollbar p-6">
+            <div class="max-w-container-max mx-auto space-y-6">
+                <!-- Header Section -->
+                <div class="flex flex-col md:flex-row justify-between items-start md:items-end gap-6">
+                    <div>
+                        <h1 class="font-display-xl text-2xl md:text-3xl text-on-surface font-bold tracking-tight mb-1">Smart Calendar</h1>
+                        <div class="flex items-center gap-3 text-on-surface-variant text-sm mt-1">
+                            <button class="p-1 rounded-full hover:bg-white/10 transition-colors"><span class="material-symbols-outlined text-sm">chevron_left</span></button>
+                            <span class="font-semibold text-primary">October 2026</span>
+                            <button class="p-1 rounded-full hover:bg-white/10 transition-colors"><span class="material-symbols-outlined text-sm">chevron_right</span></button>
+                            <button class="ml-2 px-3 py-1 rounded-full border border-white/10 text-xs hover:border-primary transition-colors">Today</button>
+                        </div>
+                    </div>
+                    <button class="btn-primary text-white font-body-md font-semibold text-sm px-5 py-2 rounded-full flex items-center gap-2" onclick="toggleModal('addEventModal', true)">
+                        <span class="material-symbols-outlined text-[18px]">add</span>
+                        <span>Add Event</span>
+                    </button>
+                </div>
+
+                <div class="grid grid-cols-1 xl:grid-cols-12 gap-6">
+                    <!-- Left Column: Calendar & AI Suggestions -->
+                    <div class="xl:col-span-8 space-y-6">
+                        <!-- AI Suggestions Panel -->
+                        <div class="glass-panel rounded-3xl p-6 relative overflow-hidden">
+                            <div class="absolute -top-10 -right-10 w-32 h-32 bg-primary/20 rounded-full blur-3xl pointer-events-none"></div>
+                            <div class="flex items-center gap-2 mb-4">
+                                <span class="material-symbols-outlined text-primary">psychology</span>
+                                <h3 class="font-body-lg font-semibold text-primary text-sm">FlowMind Schedule Suggestions</h3>
+                            </div>
+                            <div class="space-y-3">
+                                <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between bg-surface-container/50 border border-white/5 rounded-2xl p-4 gap-3">
+                                    <div class="flex items-start gap-3">
+                                        <span class="material-symbols-outlined text-secondary mt-0.5 text-md">lightbulb</span>
+                                        <p class="text-sm text-on-surface-variant">Schedule 2 hours of Deep Work on Wednesday afternoon (Oct 28).</p>
+                                    </div>
+                                    <button class="px-4 py-1.5 rounded-full border border-white/20 text-on-surface hover:bg-white/10 transition-colors text-xs font-semibold whitespace-nowrap">Apply</button>
+                                </div>
+                                <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between bg-surface-container/50 border border-white/5 rounded-2xl p-4 gap-3">
+                                    <div class="flex items-start gap-3">
+                                        <span class="material-symbols-outlined text-tertiary mt-0.5 text-md">sync_problem</span>
+                                        <p class="text-sm text-on-surface-variant">Reschedule "Design Sync" to avoid 16:30 conflict with Sarah Chen.</p>
+                                    </div>
+                                    <button class="px-4 py-1.5 rounded-full border border-white/20 text-on-surface hover:bg-white/10 transition-colors text-xs font-semibold whitespace-nowrap">Apply</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Monthly Calendar Grid -->
+                        <div class="glass-panel rounded-3xl p-6">
+                            <!-- Days Header -->
+                            <div class="grid grid-cols-7 gap-2 mb-4 text-center text-xs font-semibold text-on-surface-variant">
+                                <div>SUN</div><div>MON</div><div>TUE</div><div>WED</div><div>THU</div><div>FRI</div><div>SAT</div>
+                            </div>
+                            <!-- Calendar Grid Cells -->
+                            <div class="grid grid-cols-7 gap-2">
+                                <!-- Week 1 (Partial) -->
+                                <div class="min-h-[90px] p-2 border border-white/5 rounded-xl bg-surface-container-lowest/30 opacity-40"><span class="text-xs">27</span></div>
+                                <div class="min-h-[90px] p-2 border border-white/5 rounded-xl bg-surface-container-lowest/30 opacity-40"><span class="text-xs">28</span></div>
+                                <div class="min-h-[90px] p-2 border border-white/5 rounded-xl bg-surface-container-lowest/30 opacity-40"><span class="text-xs">29</span></div>
+                                <div class="min-h-[90px] p-2 border border-white/5 rounded-xl bg-surface-container-lowest/30 opacity-40"><span class="text-xs">30</span></div>
+                                <div class="min-h-[90px] p-2 border border-white/5 rounded-xl bg-surface-container-lowest/50 hover:bg-white/5 transition-colors"><span class="text-xs font-semibold">1</span></div>
+                                <div class="min-h-[90px] p-2 border border-white/5 rounded-xl bg-surface-container-lowest/50 hover:bg-white/5 transition-colors"><span class="text-xs font-semibold">2</span></div>
+                                <div class="min-h-[90px] p-2 border border-white/5 rounded-xl bg-surface-container-lowest/50 hover:bg-white/5 transition-colors"><span class="text-xs font-semibold">3</span></div>
+                                <!-- Week 2 -->
+                                <div class="min-h-[90px] p-2 border border-white/5 rounded-xl bg-surface-container-lowest/50 hover:bg-white/5 transition-colors"><span class="text-xs font-semibold">4</span></div>
+                                <div class="min-h-[90px] p-2 border border-white/5 rounded-xl bg-surface-container-lowest/50 hover:bg-white/5 transition-colors">
+                                    <span class="text-xs font-semibold text-primary">5</span>
+                                    <div class="mt-1 text-[10px] bg-primary/20 text-primary border border-primary/30 rounded px-1 py-0.5 truncate">10:00 Planning</div>
+                                </div>
+                                <div class="min-h-[90px] p-2 border border-white/5 rounded-xl bg-surface-container-lowest/50 hover:bg-white/5 transition-colors"><span class="text-xs font-semibold">6</span></div>
+                                <div class="min-h-[90px] p-2 border border-white/5 rounded-xl bg-surface-container-lowest/50 hover:bg-white/5 transition-colors"><span class="text-xs font-semibold">7</span></div>
+                                <div class="min-h-[90px] p-2 border border-white/5 rounded-xl bg-surface-container-lowest/50 hover:bg-white/5 transition-colors"><span class="text-xs font-semibold">8</span></div>
+                                <div class="min-h-[90px] p-2 border border-white/5 rounded-xl bg-surface-container-lowest/50 hover:bg-white/5 transition-colors">
+                                    <span class="text-xs font-semibold text-secondary">9</span>
+                                    <div class="mt-1 text-[10px] bg-secondary-container/20 text-secondary border border-secondary/25 rounded px-1 py-0.5 truncate">Team Retreat</div>
+                                </div>
+                                <div class="min-h-[90px] p-2 border border-white/5 rounded-xl bg-surface-container-lowest/50 hover:bg-white/5 transition-colors"><span class="text-xs font-semibold">10</span></div>
+                                <!-- Week 3/4 Skips directly to Week 5 containing Today -->
+                                <div class="min-h-[90px] p-2 border border-white/5 rounded-xl bg-surface-container-lowest/50 hover:bg-white/5 transition-colors col-start-1"><span class="text-xs">25</span></div>
+                                <!-- TODAY -->
+                                <div class="min-h-[100px] p-2 border border-primary/50 rounded-xl bg-primary-container/10 calendar-glow relative overflow-hidden">
+                                    <div class="absolute top-0 right-0 w-12 h-12 bg-primary/20 rounded-bl-full blur-lg pointer-events-none"></div>
+                                    <span class="text-xs font-bold text-primary bg-primary/20 w-5 h-5 rounded-full flex items-center justify-center">26</span>
+                                    <div class="mt-2 space-y-1">
+                                        <div class="text-[9px] bg-tertiary-container/30 text-tertiary-fixed border border-tertiary-container/50 rounded px-1 py-0.5 truncate flex items-center gap-1">
+                                            <span class="w-1 h-1 rounded-full bg-tertiary"></span> 14:00 Sync
+                                        </div>
+                                        <div class="text-[9px] bg-primary/20 text-primary-fixed border border-primary/30 rounded px-1 py-0.5 truncate flex items-center gap-1">
+                                            <span class="w-1 h-1 rounded-full bg-primary"></span> 16:30 Design
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="min-h-[90px] p-2 border border-white/5 rounded-xl bg-surface-container-lowest/50 hover:bg-white/5 transition-colors"><span class="text-xs">27</span></div>
+                                <div class="min-h-[90px] p-2 border border-white/5 rounded-xl bg-surface-container-lowest/50 hover:bg-white/5 transition-colors">
+                                    <span class="text-xs">28</span>
+                                    <div class="mt-1 text-[10px] bg-secondary-container/20 text-secondary border border-secondary/25 rounded px-1 py-0.5 truncate">Deep Work Suggestion</div>
+                                </div>
+                                <div class="min-h-[90px] p-2 border border-white/5 rounded-xl bg-surface-container-lowest/50 hover:bg-white/5 transition-colors"><span class="text-xs">29</span></div>
+                                <div class="min-h-[90px] p-2 border border-white/5 rounded-xl bg-surface-container-lowest/50 hover:bg-white/5 transition-colors"><span class="text-xs">30</span></div>
+                                <div class="min-h-[90px] p-2 border border-white/5 rounded-xl bg-surface-container-lowest/50 hover:bg-white/5 transition-colors"><span class="text-xs">31</span></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Right Column: Side Panel -->
+                    <div class="xl:col-span-4 space-y-6">
+                        <!-- Meeting Reminders -->
+                        <div class="glass-panel rounded-3xl p-5 border-l-4 border-l-tertiary">
+                            <div class="flex justify-between items-center mb-3">
+                                <div class="flex items-center gap-2">
+                                    <span class="material-symbols-outlined text-tertiary animate-pulse text-lg">notifications_active</span>
+                                    <h3 class="font-semibold text-on-surface text-sm">Meeting Reminder</h3>
+                                </div>
+                                <span class="text-[10px] text-tertiary-fixed bg-tertiary-container/30 px-2 py-0.5 rounded font-semibold">In 10 mins</span>
+                            </div>
+                            <p class="font-bold text-sm text-on-surface mb-1">Weekly Product Sync</p>
+                            <p class="text-xs text-on-surface-variant mb-4">Reviewing Q4 product planning and priority task routing.</p>
+                            <button class="w-full py-2 rounded-xl bg-white/10 hover:bg-white/20 text-on-surface font-semibold text-xs transition-colors flex items-center justify-center gap-2 border border-white/10">
+                                <span class="material-symbols-outlined text-[16px]">videocam</span>
+                                <span>Join Meeting</span>
+                            </button>
+                        </div>
+
+                        <!-- Upcoming Events List -->
+                        <div class="glass-panel rounded-3xl p-5 space-y-5">
+                            <div class="flex items-center justify-between">
+                                <h3 class="font-semibold text-on-surface text-sm">Upcoming Today</h3>
+                                <button class="text-on-surface-variant hover:text-primary transition-colors"><span class="material-symbols-outlined text-md">more_horiz</span></button>
+                            </div>
+                            <div class="space-y-4 relative before:absolute before:inset-y-0 before:left-3 before:w-px before:bg-white/10">
+                                <!-- Event Item 1 -->
+                                <div class="relative pl-7">
+                                    <div class="absolute left-[9px] top-1.5 w-2 h-2 rounded-full bg-tertiary ring-4 ring-background"></div>
+                                    <p class="text-xs font-semibold text-tertiary mb-1">14:00 - 15:00</p>
+                                    <div class="bg-surface-container/50 border border-white/5 rounded-xl p-3 hover:border-white/20 transition-colors cursor-pointer">
+                                        <p class="font-semibold text-xs text-on-surface">Weekly Product Sync</p>
+                                        <p class="text-[10px] text-on-surface-variant mt-1 mb-2">Google Meet Workspace</p>
+                                        <div class="flex -space-x-1.5">
+                                            <img alt="Attendee" class="w-5 h-5 rounded-full border border-surface object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAhkx7nJ_kR6dYL4gBEOoEXvzK1c4q5kSRQjxEQHQqPfy2e__lACtu65v4Wh1Mo3tyF3-cf-DfspG6y169mmaBZ4RGH6c-6hxBp0lD_czGh82mJ1Wjn_t-yo9VtYVjtn2akGA8BSvOqQxzkJox8ABnqi9Y1kO9KSTJz9Sk2r2Q2lnN31jlr9P7JZqchC2EygPhPf8CB5htcHStVilxcmV2mVyo5UZmbU0rZSpCgQWOUs-lio_DZ6MmM-5CqPxv7PXXZG0o8MCzsQS6V"/>
+                                            <div class="w-5 h-5 rounded-full border border-surface bg-surface-variant flex items-center justify-center text-[8px] text-on-surface-variant font-bold">+2</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- Event Item 2 -->
+                                <div class="relative pl-7">
+                                    <div class="absolute left-[9px] top-1.5 w-2 h-2 rounded-full bg-primary ring-4 ring-background"></div>
+                                    <p class="text-xs font-semibold text-primary mb-1">16:30 - 17:30</p>
+                                    <div class="bg-surface-container/50 border border-white/5 rounded-xl p-3 hover:border-white/20 transition-colors cursor-pointer">
+                                        <p class="font-semibold text-xs text-on-surface">Design System Review</p>
+                                        <p class="text-[10px] text-on-surface-variant mt-1">HQ Conference Room A</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Add Event Modal Overlay (Hidden by default) -->
+    <div id="addEventModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm hidden">
+        <div class="glass-panel w-full max-w-md rounded-3xl p-8 mx-margin-mobile flex flex-col gap-6 relative">
+            <button onclick="toggleModal('addEventModal', false)" class="absolute top-4 right-4 text-on-surface-variant hover:text-on-surface">
+                <span class="material-symbols-outlined">close</span>
+            </button>
+            
+            <h3 class="font-headline-md text-xl font-bold text-on-surface">Add New Event</h3>
+            <form class="space-y-4" onsubmit="event.preventDefault(); toggleModal('addEventModal', false); alert('Event created successfully (Demo)');">
+                <div>
+                    <label class="block text-xs text-on-surface-variant mb-1">Event Title</label>
+                    <input class="w-full bg-[#050505] border border-white/10 rounded-full px-4 py-2 text-sm focus:outline-none focus:border-primary text-on-surface" placeholder="e.g., Deep Work Session" required type="text"/>
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs text-on-surface-variant mb-1">Date</label>
+                        <input class="w-full bg-[#050505] border border-white/10 rounded-full px-4 py-2 text-sm focus:outline-none focus:border-primary text-on-surface color-scheme-dark" required type="date"/>
+                    </div>
+                    <div>
+                        <label class="block text-xs text-on-surface-variant mb-1">Time</label>
+                        <input class="w-full bg-[#050505] border border-white/10 rounded-full px-4 py-2 text-sm focus:outline-none focus:border-primary text-on-surface color-scheme-dark" required type="time"/>
+                    </div>
+                </div>
+                <div>
+                    <div class="flex items-center gap-2 mb-2">
+                        <span class="material-symbols-outlined text-primary text-sm">psychology</span>
+                        <label class="block text-xs text-primary font-bold">AI Auto-Schedule</label>
+                    </div>
+                    <label class="flex items-center cursor-pointer">
+                        <input class="w-4 h-4 rounded border-white/20 bg-transparent text-primary focus:ring-primary focus:ring-offset-0 cursor-pointer" type="checkbox"/>
+                        <span class="ml-2 text-xs text-on-surface-variant">Find optimal time based on habits</span>
+                    </label>
+                </div>
+                <div class="pt-4 flex justify-end gap-3">
+                    <button class="px-5 py-2.5 rounded-full border border-white/20 text-on-surface hover:bg-white/5 transition-colors text-xs font-semibold" onclick="toggleModal('addEventModal', false)" type="button">Cancel</button>
+                    <button class="btn-primary px-6 py-2.5 rounded-full text-white font-semibold text-xs" type="submit">Save Event</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        function toggleModal(modalID, show) {
+            const modal = document.getElementById(modalID);
+            if (show) {
+                modal.classList.remove('hidden');
+            } else {
+                modal.classList.add('hidden');
+            }
+        }
+
+        // Mobile menu toggle logic
+        document.getElementById('mobile-menu-btn')?.addEventListener('click', () => {
+            const sidebar = document.getElementById('sidebar');
+            sidebar.classList.toggle('-translate-x-full');
+        });
+    </script>
+</body>
+</html>

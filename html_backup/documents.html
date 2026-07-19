@@ -1,0 +1,543 @@
+<!DOCTYPE html>
+<html class="dark" lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>FlowMind AI - Document Summarizer</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&amp;display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                            "surface-container": "#201f1f",
+                            "surface-container-highest": "#353534",
+                            "secondary-fixed-dim": "#adc6ff",
+                            "tertiary": "#ffb869",
+                            "inverse-on-surface": "#313030",
+                            "tertiary-container": "#ca801e",
+                            "tertiary-fixed-dim": "#ffb869",
+                            "surface-container-high": "#2a2a2a",
+                            "surface-container-low": "#1c1b1b",
+                            "tertiary-fixed": "#ffdcbb",
+                            "on-primary-container": "#340080",
+                            "on-tertiary-container": "#3f2300",
+                            "error": "#ffb4ab",
+                            "surface-container-lowest": "#0e0e0e",
+                            "inverse-primary": "#6d3bd7",
+                            "on-primary-fixed-variant": "#5516be",
+                            "on-secondary-fixed-variant": "#004395",
+                            "surface-dim": "#131313",
+                            "on-tertiary-fixed-variant": "#673d00",
+                            "on-secondary-fixed": "#001a42",
+                            "inverse-surface": "#e5e2e1",
+                            "background": "#131313",
+                            "on-background": "#e5e2e1",
+                            "primary-fixed": "#e9ddff",
+                            "surface-bright": "#3a3939",
+                            "surface": "#131313",
+                            "on-error-container": "#ffdad6",
+                            "on-error": "#690005",
+                            "surface-tint": "#d0bcff",
+                            "error-container": "#93000a",
+                            "on-tertiary-fixed": "#2c1700",
+                            "primary": "#d0bcff",
+                            "on-primary-fixed": "#23005c",
+                            "on-primary": "#3c0091",
+                            "primary-fixed-dim": "#d0bcff",
+                            "on-surface-variant": "#cbc3d7",
+                            "on-secondary": "#002e6a",
+                            "outline-variant": "#494454",
+                            "outline": "#958ea0",
+                            "on-secondary-container": "#e6ecff",
+                            "on-surface": "#e5e2e1",
+                            "secondary-fixed": "#d8e2ff",
+                            "secondary": "#adc6ff",
+                            "primary-container": "#a078ff",
+                            "on-tertiary": "#482900",
+                            "surface-variant": "#353534",
+                            "secondary-container": "#0566d9"
+                    },
+                    "borderRadius": {
+                            "DEFAULT": "1rem",
+                            "lg": "2rem",
+                            "xl": "3rem",
+                            "full": "9999px"
+                    },
+                    "spacing": {
+                            "unit": "8px",
+                            "gutter": "32px",
+                            "section-gap": "120px",
+                            "margin-mobile": "20px",
+                            "container-max": "1280px"
+                    },
+                    "fontFamily": {
+                            "display-xl-mobile": ["Inter"],
+                            "headline-lg-mobile": ["Inter"],
+                            "headline-md": ["Inter"],
+                            "headline-lg": ["Inter"],
+                            "display-xl": ["Inter"],
+                            "body-lg": ["Inter"],
+                            "body-md": ["Inter"],
+                            "label-sm": ["Inter"]
+                    },
+                    "fontSize": {
+                            "display-xl-mobile": ["40px", {"lineHeight": "48px", "letterSpacing": "-0.03em", "fontWeight": "800"}],
+                            "headline-lg-mobile": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                            "headline-md": ["30px", {"lineHeight": "38px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                            "headline-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                            "display-xl": ["72px", {"lineHeight": "80px", "letterSpacing": "-0.04em", "fontWeight": "800"}],
+                            "body-lg": ["18px", {"lineHeight": "28px", "letterSpacing": "0em", "fontWeight": "400"}],
+                            "body-md": ["16px", {"lineHeight": "24px", "letterSpacing": "0em", "fontWeight": "400"}],
+                            "label-sm": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600"}]
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .glass-panel {
+            background: rgba(19, 19, 19, 0.4);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            border-left: 1px solid rgba(255, 255, 255, 0.15);
+        }
+        .glass-card {
+            background-color: rgba(19, 19, 19, 0.4);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-top: 1px solid rgba(255, 255, 255, 0.2);
+            border-left: 1px solid rgba(255, 255, 255, 0.15);
+            transition: all 0.3s ease;
+        }
+        .glass-card:hover {
+            border-color: rgba(208, 188, 255, 0.3);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+        }
+        .glow-bg {
+            position: fixed;
+            top: -20%;
+            left: -10%;
+            width: 120vw;
+            height: 120vh;
+            background: radial-gradient(circle at 30% 30%, rgba(109, 59, 215, 0.15) 0%, transparent 60%),
+                        radial-gradient(circle at 70% 70%, rgba(5, 102, 217, 0.1) 0%, transparent 50%);
+            z-index: -1;
+            pointer-events: none;
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 9999px;
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, #d0bcff 0%, #a078ff 100%);
+            color: #23005c;
+            box-shadow: 0 0 15px rgba(160, 120, 255, 0.5);
+            transition: all 0.3s ease;
+        }
+        .btn-primary:hover {
+            box-shadow: 0 0 25px rgba(160, 120, 255, 0.8);
+            transform: translateY(-1px);
+        }
+        .btn-secondary {
+            background: rgba(53, 53, 52, 0.6);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            transition: all 0.3s ease;
+        }
+        .btn-secondary:hover {
+            background: rgba(73, 68, 84, 0.8);
+            border-color: rgba(255, 255, 255, 0.3);
+        }
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.4s ease-out forwards;
+        }
+        .tab-content.active {
+            display: block;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body class="bg-background text-on-surface font-body-md h-screen overflow-hidden flex">
+    <!-- Ambient Background -->
+    <div class="glow-bg"></div>
+
+    <!-- Fixed Left Sidebar -->
+    <aside class="w-64 glass-panel h-full flex flex-col justify-between py-6 px-4 shrink-0 hidden md:flex border-r border-white/10 z-10 rounded-r-3xl">
+        <div class="flex flex-col h-full justify-between">
+            <div>
+                <a href="index.html" class="flex items-center gap-3 mb-10 px-2 hover:scale-105 transition-transform inline-flex">
+                    <span class="material-symbols-outlined text-primary text-3xl" style="font-variation-settings: 'FILL' 1;">psychology</span>
+                    <span class="font-headline-md text-headline-md font-bold text-on-surface tracking-tight">FlowMind</span>
+                </a>
+                <nav class="space-y-1">
+                    <!-- Dashboard -->
+                    <a class="flex items-center gap-3 px-4 py-2.5 rounded-full text-on-surface-variant hover:text-primary hover:bg-white/5 transition-all" href="dashboard.html">
+                        <span class="material-symbols-outlined">dashboard</span>
+                        <span class="font-body-md text-sm">Dashboard</span>
+                    </a>
+                    <!-- Tasks -->
+                    <a class="flex items-center gap-3 px-4 py-2.5 rounded-full text-on-surface-variant hover:text-primary hover:bg-white/5 transition-all" href="tasks.html">
+                        <span class="material-symbols-outlined">assignment</span>
+                        <span class="font-body-md text-sm">Tasks</span>
+                    </a>
+                    <!-- Calendar -->
+                    <a class="flex items-center gap-3 px-4 py-2.5 rounded-full text-on-surface-variant hover:text-primary hover:bg-white/5 transition-all" href="calendar.html">
+                        <span class="material-symbols-outlined">calendar_month</span>
+                        <span class="font-body-md text-sm">Calendar</span>
+                    </a>
+                    <!-- Documents (Active) -->
+                    <a class="flex items-center gap-3 px-4 py-2.5 rounded-full bg-primary-container/20 text-primary border border-primary/30 transition-all shadow-[0_0_10px_rgba(208,188,255,0.15)]" href="#">
+                        <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">description</span>
+                        <span class="font-body-md font-semibold text-sm">Documents</span>
+                    </a>
+                    <!-- Meetings -->
+                    <a class="flex items-center gap-3 px-4 py-2.5 rounded-full text-on-surface-variant hover:text-primary hover:bg-white/5 transition-all" href="#">
+                        <span class="material-symbols-outlined">video_camera_back</span>
+                        <span class="font-body-md text-sm">Meetings</span>
+                    </a>
+                    <!-- AI Assistant -->
+                    <a class="flex items-center gap-3 px-4 py-2.5 rounded-full text-on-surface-variant hover:text-primary hover:bg-white/5 transition-all" href="assistant.html">
+                        <span class="material-symbols-outlined">chat</span>
+                        <span class="font-body-md text-sm">AI Assistant</span>
+                    </a>
+                    <!-- Team -->
+                    <a class="flex items-center gap-3 px-4 py-2.5 rounded-full text-on-surface-variant hover:text-primary hover:bg-white/5 transition-all" href="#">
+                        <span class="material-symbols-outlined">group</span>
+                        <span class="font-body-md text-sm">Team</span>
+                    </a>
+                </nav>
+            </div>
+            
+            <nav class="space-y-1">
+                <!-- Settings -->
+                <a class="flex items-center gap-3 px-4 py-2.5 rounded-full text-on-surface-variant hover:text-primary hover:bg-white/5 transition-all" href="#">
+                    <span class="material-symbols-outlined">settings</span>
+                    <span class="font-body-md text-sm">Settings</span>
+                </a>
+                <!-- Sign Out -->
+                <a class="flex items-center gap-3 px-4 py-2.5 rounded-full text-on-surface-variant hover:text-red-400 hover:bg-red-500/10 transition-all" href="login.html">
+                    <span class="material-symbols-outlined">logout</span>
+                    <span class="font-body-md text-sm">Sign Out</span>
+                </a>
+            </nav>
+        </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <main class="flex-grow flex flex-col h-full overflow-hidden relative z-0">
+        <!-- Top Navbar -->
+        <header class="h-20 flex items-center justify-between px-6 glass-card border-b border-white/10 shrink-0 sticky top-0 z-50 rounded-b-3xl mx-4 mt-4">
+            <!-- Mobile Menu Toggle -->
+            <button class="md:hidden text-on-surface">
+                <span class="material-symbols-outlined">menu</span>
+            </button>
+            
+            <!-- Centered Search -->
+            <div class="flex-1 max-w-xl mx-auto hidden md:block">
+                <div class="relative">
+                    <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-on-surface-variant">search</span>
+                    <input class="w-full bg-[#050505] border border-white/10 rounded-full py-2 pl-12 pr-4 text-on-surface focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all font-body-md placeholder-on-surface-variant/50 text-sm" placeholder="Search documents, summaries, or ask AI..." type="text"/>
+                </div>
+            </div>
+            
+            <!-- Right Actions -->
+            <div class="flex items-center gap-4">
+                <button class="relative p-2 text-on-surface-variant hover:text-primary transition-colors">
+                    <span class="material-symbols-outlined">notifications</span>
+                    <span class="absolute top-1.5 right-1.5 w-2 h-2 bg-error rounded-full border border-surface shadow-[0_0_5px_rgba(255,180,171,0.5)]"></span>
+                </button>
+                <div class="flex items-center gap-2 pl-2 border-l border-white/10">
+                    <div class="w-9 h-9 rounded-full bg-surface-container-highest border border-white/20 overflow-hidden shrink-0">
+                        <img alt="User Profile" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAhkx7nJ_kR6dYL4gBEOoEXvzK1c4q5kSRQjxEQHQqPfy2e__lACtu65v4Wh1Mo3tyF3-cf-DfspG6y169mmaBZ4RGH6c-6hxBp0lD_czGh82mJ1Wjn_t-yo9VtYVjtn2akGA8BSvOqQxzkJox8ABnqi9Y1kO9KSTJz9Sk2r2Q2lnN31jlr9P7JZqchC2EygPhPf8CB5htcHStVilxcmV2mVyo5UZmbU0rZSpCgQWOUs-lio_DZ6MmM-5CqPxv7PXXZG0o8MCzsQS6V"/>
+                    </div>
+                    <div class="hidden xl:block text-left text-xs">
+                        <p class="font-semibold text-on-surface">Alex Mercer</p>
+                        <p class="text-on-surface-variant">alex@flowmind.ai</p>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Scrollable Document Summarizer Content -->
+        <div class="flex-1 overflow-y-auto custom-scrollbar p-6">
+            <div class="max-w-container-max mx-auto space-y-6">
+                <!-- Page Header -->
+                <div class="mb-4">
+                    <h1 class="font-display-xl text-2xl md:text-3xl text-on-surface font-bold tracking-tight mb-1">Document Summarizer</h1>
+                    <p class="text-sm text-on-surface-variant">Instantly extract core insights, key takeaways, and action items from any document.</p>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+                    <!-- Left Column: Upload & History -->
+                    <div class="lg:col-span-5 space-y-6">
+                        <!-- Upload Zone -->
+                        <div class="glass-panel rounded-3xl p-8 flex flex-col items-center justify-center text-center relative border-2 border-dashed border-white/20 hover:border-primary/50 transition-colors group cursor-pointer" onclick="simulateUpload()">
+                            <div class="absolute inset-0 bg-primary/5 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none rounded-3xl"></div>
+                            <div class="w-14 h-14 rounded-full bg-white/5 flex items-center justify-center mb-4 group-hover:scale-105 transition-transform duration-300">
+                                <span class="material-symbols-outlined text-3xl text-primary">cloud_upload</span>
+                            </div>
+                            <h3 class="font-semibold text-sm text-on-surface mb-1">Drag & drop your files here</h3>
+                            <p class="text-xs text-on-surface-variant mb-4">Supports PDF, DOCX up to 50MB</p>
+                            <button class="btn-secondary px-5 py-2 rounded-full text-xs font-semibold flex items-center gap-2">
+                                <span class="material-symbols-outlined text-[16px]">folder_open</span>
+                                <span>Browse Files</span>
+                            </button>
+                            
+                            <!-- Upload Progress Overlay (Hidden by default, shown during upload) -->
+                            <div id="upload-progress-container" class="w-full mt-5 hidden">
+                                <div class="bg-surface-container-highest rounded-full h-1.5 overflow-hidden">
+                                    <div id="upload-progress-bar" class="bg-primary h-full rounded-full" style="width: 0%;"></div>
+                                </div>
+                                <div class="flex justify-between mt-2 text-[10px] text-on-surface-variant font-semibold">
+                                    <span id="upload-filename">Strategic_Roadmap.pdf</span>
+                                    <span id="upload-percentage" class="text-primary font-bold">0%</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Recent Documents List -->
+                        <div class="glass-panel rounded-3xl p-6">
+                            <h3 class="font-semibold text-on-surface text-sm mb-4">Recent Documents</h3>
+                            <div class="space-y-3">
+                                <!-- History Item 1 -->
+                                <div class="bg-surface-container/50 border border-white/5 rounded-2xl p-3.5 flex items-center gap-3 hover:bg-white/5 transition-colors">
+                                    <div class="w-10 h-10 rounded-xl bg-error/10 flex items-center justify-center text-error border border-error/20 shrink-0">
+                                        <span class="material-symbols-outlined text-xl">picture_as_pdf</span>
+                                    </div>
+                                    <div class="flex-grow min-w-0">
+                                        <p class="font-semibold text-xs text-on-surface truncate">Q3_Planning.pdf</p>
+                                        <p class="text-[10px] text-on-surface-variant mt-0.5">1.2 MB • Oct 24, 2026</p>
+                                    </div>
+                                    <button onclick="loadDocumentSummary('Q3_Planning.pdf', '1.2 MB', '12 Pages')" class="px-3 py-1.5 rounded-full bg-primary/10 text-primary border border-primary/20 text-[10px] font-semibold hover:bg-primary/25 transition-colors">View Summary</button>
+                                </div>
+                                <!-- History Item 2 -->
+                                <div class="bg-surface-container/50 border border-white/5 rounded-2xl p-3.5 flex items-center gap-3 hover:bg-white/5 transition-colors">
+                                    <div class="w-10 h-10 rounded-xl bg-secondary/10 flex items-center justify-center text-secondary border border-secondary/20 shrink-0">
+                                        <span class="material-symbols-outlined text-xl">description</span>
+                                    </div>
+                                    <div class="flex-grow min-w-0">
+                                        <p class="font-semibold text-xs text-on-surface truncate">Product_Specs_v2.docx</p>
+                                        <p class="text-[10px] text-on-surface-variant mt-0.5">850 KB • Oct 22, 2026</p>
+                                    </div>
+                                    <button onclick="loadDocumentSummary('Product_Specs_v2.docx', '850 KB', '8 Pages')" class="px-3 py-1.5 rounded-full bg-white/5 text-on-surface-variant border border-white/10 text-[10px] font-semibold hover:bg-white/10 hover:text-on-surface transition-colors">View Summary</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Right Column: Summary Panel -->
+                    <div class="lg:col-span-7">
+                        <div class="glass-panel rounded-3xl flex flex-col h-[600px] overflow-hidden">
+                            <!-- Panel Header -->
+                            <div class="p-5 border-b border-white/10 bg-surface-container-highest/20 flex items-center justify-between shrink-0">
+                                <div class="flex gap-3 items-center min-w-0">
+                                    <div class="w-11 h-11 rounded-xl bg-error/10 flex items-center justify-center text-error border border-error/20 shrink-0">
+                                        <span class="material-symbols-outlined text-xl">picture_as_pdf</span>
+                                    </div>
+                                    <div class="min-w-0">
+                                        <h3 class="font-bold text-sm text-on-surface flex items-center gap-2 truncate">
+                                            <span id="summary-filename">Q3_Planning.pdf</span>
+                                            <span class="px-1.5 py-0.5 rounded text-[8px] font-semibold bg-primary/20 text-primary border border-primary/30 uppercase tracking-wide">Analyzed</span>
+                                        </h3>
+                                        <div class="flex gap-3 text-[10px] text-on-surface-variant mt-0.5 font-semibold">
+                                            <span id="summary-size">4.2 MB</span>
+                                            <span id="summary-pages">12 Pages</span>
+                                            <span>AI Pro Sync</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <button class="w-8 h-8 rounded-full flex items-center justify-center text-on-surface-variant hover:text-white hover:bg-white/10 transition-colors">
+                                    <span class="material-symbols-outlined text-md">more_vert</span>
+                                </button>
+                            </div>
+
+                            <!-- Tabs -->
+                            <div class="flex border-b border-white/5 px-6 pt-2 shrink-0 text-xs">
+                                <button class="tab-btn active px-4 py-3 font-semibold border-b-2 border-primary text-primary transition-colors" data-target="exec-summary">
+                                    Executive Summary
+                                </button>
+                                <button class="tab-btn px-4 py-3 font-semibold border-b-2 border-transparent text-on-surface-variant hover:text-on-surface transition-colors" data-target="key-points">
+                                    Key Points
+                                </button>
+                                <button class="tab-btn px-4 py-3 font-semibold border-b-2 border-transparent text-on-surface-variant hover:text-on-surface transition-colors flex items-center gap-1.5" data-target="action-items">
+                                    <span>Action Items</span>
+                                    <span class="bg-primary text-surface text-[9px] px-1.5 py-0.5 rounded-full font-bold">3</span>
+                                </button>
+                            </div>
+
+                            <!-- Tab Content (Scrollable) -->
+                            <div class="flex-grow overflow-y-auto p-6 scroll-smooth custom-scrollbar text-sm">
+                                <!-- Executive Summary -->
+                                <div class="tab-content active" id="exec-summary">
+                                    <div class="space-y-4 text-on-surface leading-relaxed text-xs">
+                                        <p>
+                                            The Q3 Planning document outlines a strategic shift towards AI-driven feature integration across the core SaaS platform. The primary objective is to increase user retention by 15% through personalized workflow automation.
+                                        </p>
+                                        <p>
+                                            Financial projections indicate a required budget increase of $450k allocated primarily to the machine learning engineering team and cloud infrastructure scaling. The marketing strategy will pivot to emphasize "Atmospheric Precision" and intelligent automation.
+                                        </p>
+                                        <div class="bg-primary-container/10 border-l-4 border-primary p-4 rounded-r-2xl mt-6">
+                                            <p class="font-bold text-xs text-primary mb-1 uppercase tracking-wide">AI Recommendation Summary</p>
+                                            <p class="text-[11px] text-on-surface-variant">
+                                                The document suggests high confidence in technical feasibility but highlights significant risks regarding aggressive Q3 delivery timelines without immediate hiring action.
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Key Points -->
+                                <div class="tab-content" id="key-points">
+                                    <ul class="space-y-3 text-xs">
+                                        <li class="flex items-start gap-3 bg-surface-container/30 p-3.5 border border-white/5 rounded-2xl">
+                                            <span class="material-symbols-outlined text-primary mt-0.5 text-md">insights</span>
+                                            <div>
+                                                <h4 class="font-bold text-on-surface">Core Objective Shift</h4>
+                                                <p class="text-on-surface-variant mt-0.5">Transitioning from manual input grids to proactive AI suggestions to optimize workflow loops.</p>
+                                            </div>
+                                        </li>
+                                        <li class="flex items-start gap-3 bg-surface-container/30 p-3.5 border border-white/5 rounded-2xl">
+                                            <span class="material-symbols-outlined text-tertiary mt-0.5 text-md">account_balance_wallet</span>
+                                            <div>
+                                                <h4 class="font-bold text-on-surface">Budget Reallocation</h4>
+                                                <p class="text-on-surface-variant mt-0.5">$450k requested for Q3; 60% dedicated to core ML hiring, 40% to multi-cloud server allocations.</p>
+                                            </div>
+                                        </li>
+                                    </ul>
+                                </div>
+
+                                <!-- Action Items -->
+                                <div class="tab-content" id="action-items">
+                                    <div class="space-y-3 text-xs">
+                                        <label class="flex items-start gap-3 p-3 border border-white/5 rounded-2xl hover:bg-white/5 cursor-pointer transition-colors group">
+                                            <input class="w-4 h-4 rounded border-white/20 bg-transparent text-primary focus:ring-primary focus:ring-offset-0 cursor-pointer mt-0.5" type="checkbox"/>
+                                            <div>
+                                                <p class="font-bold text-on-surface group-hover:text-primary transition-colors">Approve $450k budget allocation</p>
+                                                <p class="text-[10px] text-on-surface-variant mt-0.5 flex items-center gap-1"><span class="material-symbols-outlined text-xs">person</span> Finance Team</p>
+                                            </div>
+                                        </label>
+                                        <label class="flex items-start gap-3 p-3 border border-white/5 rounded-2xl hover:bg-white/5 cursor-pointer transition-colors group">
+                                            <input class="w-4 h-4 rounded border-white/20 bg-transparent text-primary focus:ring-primary focus:ring-offset-0 cursor-pointer mt-0.5" type="checkbox"/>
+                                            <div>
+                                                <p class="font-bold text-on-surface group-hover:text-primary transition-colors">Open 3 Senior ML Engineer requisitions</p>
+                                                <p class="text-[10px] text-on-surface-variant mt-0.5 flex items-center gap-1"><span class="material-symbols-outlined text-xs">person</span> HR Team</p>
+                                            </div>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Panel Footer -->
+                            <div class="p-4 border-t border-white/10 bg-surface-container-highest/20 flex flex-wrap gap-3 items-center justify-between shrink-0">
+                                <div class="flex gap-2">
+                                    <button onclick="alert('Exporting PDF summary...')" class="btn-secondary px-4 py-2 rounded-xl text-xs font-semibold flex items-center gap-2 border border-white/10">
+                                        <span class="material-symbols-outlined text-[16px] text-error">picture_as_pdf</span>
+                                        <span>Export PDF</span>
+                                    </button>
+                                    <button onclick="alert('Exporting DOCX summary...')" class="btn-secondary px-4 py-2 rounded-xl text-xs font-semibold flex items-center gap-2 border border-white/10">
+                                        <span class="material-symbols-outlined text-[16px] text-secondary">description</span>
+                                        <span>Export DOCX</span>
+                                    </button>
+                                </div>
+                                <button onclick="alert('Summary saved to workspace notes')" class="btn-primary px-5 py-2 rounded-xl text-xs font-bold flex items-center gap-2">
+                                    <span class="material-symbols-outlined text-[16px]">save</span>
+                                    <span>Save to Workspace</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Tab Switching Logic
+            const tabBtns = document.querySelectorAll('.tab-btn');
+            const tabContents = document.querySelectorAll('.tab-content');
+
+            tabBtns.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    tabBtns.forEach(b => {
+                        b.classList.remove('border-primary', 'text-primary', 'active');
+                        b.classList.add('border-transparent', 'text-on-surface-variant');
+                    });
+                    tabContents.forEach(c => c.classList.remove('active'));
+
+                    btn.classList.add('border-primary', 'text-primary', 'active');
+                    btn.classList.remove('border-transparent', 'text-on-surface-variant');
+                    
+                    const targetId = btn.getAttribute('data-target');
+                    document.getElementById(targetId).classList.add('active');
+                });
+            });
+        });
+
+        function simulateUpload() {
+            const container = document.getElementById('upload-progress-container');
+            const progressBar = document.getElementById('upload-progress-bar');
+            const percentageText = document.getElementById('upload-percentage');
+            
+            container.classList.remove('hidden');
+            let progress = 0;
+            
+            const interval = setInterval(() => {
+                progress += 10;
+                progressBar.style.width = progress + '%';
+                percentageText.innerText = progress + '%';
+                
+                if (progress >= 100) {
+                    clearInterval(interval);
+                    setTimeout(() => {
+                        percentageText.innerText = 'Complete';
+                        percentageText.classList.add('text-emerald-400');
+                        loadDocumentSummary('Strategic_Roadmap_2027.pdf', '2.4 MB', '6 Pages');
+                    }, 500);
+                }
+            }, 200);
+        }
+
+        function loadDocumentSummary(name, size, pages) {
+            document.getElementById('summary-filename').innerText = name;
+            document.getElementById('summary-size').innerText = size;
+            document.getElementById('summary-pages').innerText = pages;
+            
+            // Simulating switching content depending on files loaded
+            const execContent = document.querySelector('#exec-summary .space-y-4');
+            if (name.includes('Strategic_Roadmap')) {
+                execContent.innerHTML = `
+                    <p>Strategic roadmap details for 2027 show targeted milestones for mobile applications rollout, chat engines optimization, and calendar automation APIs integration.</p>
+                    <p>Timeline suggests Phase 1 rollout by late February 2027 with direct dependency on the design system stability.</p>
+                `;
+            } else if (name.includes('Specs')) {
+                execContent.innerHTML = `
+                    <p>The Product Specifications v2 sheet includes API endpoints definitions for tasks lists fetches, AI summaries endpoints, and workspace user invites payloads configurations.</p>
+                `;
+            } else {
+                execContent.innerHTML = `
+                    <p>The Q3 Planning document outlines a strategic shift towards AI-driven feature integration across the core SaaS platform. The primary objective is to increase user retention by 15% through personalized workflow automation.</p>
+                `;
+            }
+        }
+    </script>
+</body>
+</html>

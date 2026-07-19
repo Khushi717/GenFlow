@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html class="dark" lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>FlowMind AI - AI Assistant</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&amp;display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                            "surface-container": "#201f1f",
+                            "surface-container-highest": "#353534",
+                            "secondary-fixed-dim": "#adc6ff",
+                            "tertiary": "#ffb869",
+                            "inverse-on-surface": "#313030",
+                            "tertiary-container": "#ca801e",
+                            "tertiary-fixed-dim": "#ffb869",
+                            "surface-container-high": "#2a2a2a",
+                            "surface-container-low": "#1c1b1b",
+                            "tertiary-fixed": "#ffdcbb",
+                            "on-primary-container": "#340080",
+                            "on-tertiary-container": "#3f2300",
+                            "error": "#ffb4ab",
+                            "surface-container-lowest": "#0e0e0e",
+                            "inverse-primary": "#6d3bd7",
+                            "on-primary-fixed-variant": "#5516be",
+                            "on-secondary-fixed-variant": "#004395",
+                            "surface-dim": "#131313",
+                            "on-tertiary-fixed-variant": "#673d00",
+                            "on-secondary-fixed": "#001a42",
+                            "inverse-surface": "#e5e2e1",
+                            "background": "#131313",
+                            "on-background": "#e5e2e1",
+                            "primary-fixed": "#e9ddff",
+                            "surface-bright": "#3a3939",
+                            "surface": "#131313",
+                            "on-error-container": "#ffdad6",
+                            "on-error": "#690005",
+                            "surface-tint": "#d0bcff",
+                            "error-container": "#93000a",
+                            "on-tertiary-fixed": "#2c1700",
+                            "primary": "#d0bcff",
+                            "on-primary-fixed": "#23005c",
+                            "on-primary": "#3c0091",
+                            "primary-fixed-dim": "#d0bcff",
+                            "on-surface-variant": "#cbc3d7",
+                            "on-secondary": "#002e6a",
+                            "outline-variant": "#494454",
+                            "outline": "#958ea0",
+                            "on-secondary-container": "#e6ecff",
+                            "on-surface": "#e5e2e1",
+                            "secondary-fixed": "#d8e2ff",
+                            "secondary": "#adc6ff",
+                            "primary-container": "#a078ff",
+                            "on-tertiary": "#482900",
+                            "surface-variant": "#353534",
+                            "secondary-container": "#0566d9"
+                    },
+                    "borderRadius": {
+                            "DEFAULT": "1rem",
+                            "lg": "2rem",
+                            "xl": "3rem",
+                            "full": "9999px"
+                    },
+                    "spacing": {
+                            "unit": "8px",
+                            "section-gap": "120px",
+                            "container-max": "1280px",
+                            "margin-mobile": "20px",
+                            "gutter": "32px"
+                    },
+                    "fontFamily": {
+                            "headline-lg": ["Inter"],
+                            "body-lg": ["Inter"],
+                            "headline-lg-mobile": ["Inter"],
+                            "display-xl": ["Inter"],
+                            "display-xl-mobile": ["Inter"],
+                            "label-sm": ["Inter"],
+                            "headline-md": ["Inter"],
+                            "body-md": ["Inter"]
+                    },
+                    "fontSize": {
+                            "headline-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                            "body-lg": ["18px", {"lineHeight": "28px", "letterSpacing": "0em", "fontWeight": "400"}],
+                            "headline-lg-mobile": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                            "display-xl": ["72px", {"lineHeight": "80px", "letterSpacing": "-0.04em", "fontWeight": "800"}],
+                            "display-xl-mobile": ["40px", {"lineHeight": "48px", "letterSpacing": "-0.03em", "fontWeight": "800"}],
+                            "label-sm": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                            "headline-md": ["30px", {"lineHeight": "38px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                            "body-md": ["16px", {"lineHeight": "24px", "letterSpacing": "0em", "fontWeight": "400"}]
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { background-color: theme('colors.background'); color: theme('colors.on-surface'); }
+        .glass-panel {
+            background-color: rgba(19, 19, 19, 0.4);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .glass-card {
+            background-color: rgba(19, 19, 19, 0.4);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-top: 1px solid rgba(255, 255, 255, 0.2);
+            border-left: 1px solid rgba(255, 255, 255, 0.15);
+            transition: all 0.3s ease;
+        }
+        .glow-orb {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(120px);
+            z-index: -1;
+            opacity: 0.15;
+            pointer-events: none;
+        }
+        .bg-gradient-accent { background: linear-gradient(135deg, theme('colors.primary'), theme('colors.secondary')); }
+        .border-gradient { position: relative; }
+        .border-gradient::before {
+            content: ""; position: absolute; inset: 0;
+            border-radius: inherit; padding: 1px;
+            background: linear-gradient(180deg, rgba(255,255,255,0.2) 0%, rgba(255,255,255,0) 100%);
+            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor; mask-composite: exclude; pointer-events: none;
+        }
+        
+        .chat-scroll::-webkit-scrollbar { width: 6px; }
+        .chat-scroll::-webkit-scrollbar-track { background: transparent; }
+        .chat-scroll::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 4px; }
+        .chat-scroll::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.2); }
+    </style>
+</head>
+<body class="bg-background text-on-surface font-body-md h-screen overflow-hidden flex">
+    <!-- Ambient Lighting Orbs -->
+    <div class="glow-orb w-[600px] h-[600px] bg-primary -top-[200px] -left-[100px]"></div>
+    <div class="glow-orb w-[500px] h-[500px] bg-secondary bottom-[10%] right-[10%] opacity-10"></div>
+
+    <!-- Fixed Left Sidebar -->
+    <aside class="w-64 glass-panel h-full flex flex-col justify-between py-6 px-4 shrink-0 hidden md:flex border-r border-white/10 z-10 rounded-r-3xl">
+        <div class="flex flex-col h-full justify-between">
+            <div>
+                <a href="index.html" class="flex items-center gap-3 mb-10 px-2 hover:scale-105 transition-transform inline-flex">
+                    <span class="material-symbols-outlined text-primary text-3xl" style="font-variation-settings: 'FILL' 1;">psychology</span>
+                    <span class="font-headline-md text-headline-md font-bold text-on-surface tracking-tight">FlowMind</span>
+                </a>
+                <nav class="space-y-1">
+                    <!-- Dashboard -->
+                    <a class="flex items-center gap-3 px-4 py-2.5 rounded-full text-on-surface-variant hover:text-primary hover:bg-white/5 transition-all" href="dashboard.html">
+                        <span class="material-symbols-outlined">dashboard</span>
+                        <span class="font-body-md text-sm">Dashboard</span>
+                    </a>
+                    <!-- Tasks -->
+                    <a class="flex items-center gap-3 px-4 py-2.5 rounded-full text-on-surface-variant hover:text-primary hover:bg-white/5 transition-all" href="tasks.html">
+                        <span class="material-symbols-outlined">assignment</span>
+                        <span class="font-body-md text-sm">Tasks</span>
+                    </a>
+                    <!-- Calendar -->
+                    <a class="flex items-center gap-3 px-4 py-2.5 rounded-full text-on-surface-variant hover:text-primary hover:bg-white/5 transition-all" href="calendar.html">
+                        <span class="material-symbols-outlined">calendar_month</span>
+                        <span class="font-body-md text-sm">Calendar</span>
+                    </a>
+                    <!-- Documents -->
+                    <a class="flex items-center gap-3 px-4 py-2.5 rounded-full text-on-surface-variant hover:text-primary hover:bg-white/5 transition-all" href="documents.html">
+                        <span class="material-symbols-outlined">description</span>
+                        <span class="font-body-md text-sm">Documents</span>
+                    </a>
+                    <!-- Meetings -->
+                    <a class="flex items-center gap-3 px-4 py-2.5 rounded-full text-on-surface-variant hover:text-primary hover:bg-white/5 transition-all" href="#">
+                        <span class="material-symbols-outlined">video_camera_back</span>
+                        <span class="font-body-md text-sm">Meetings</span>
+                    </a>
+                    <!-- AI Assistant (Active) -->
+                    <a class="flex items-center gap-3 px-4 py-2.5 rounded-full bg-primary-container/20 text-primary border border-primary/30 transition-all shadow-[0_0_10px_rgba(208,188,255,0.15)]" href="#">
+                        <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">chat</span>
+                        <span class="font-body-md font-semibold text-sm">AI Assistant</span>
+                    </a>
+                    <!-- Team -->
+                    <a class="flex items-center gap-3 px-4 py-2.5 rounded-full text-on-surface-variant hover:text-primary hover:bg-white/5 transition-all" href="#">
+                        <span class="material-symbols-outlined">group</span>
+                        <span class="font-body-md text-sm">Team</span>
+                    </a>
+                </nav>
+            </div>
+            
+            <nav class="space-y-1">
+                <!-- Settings -->
+                <a class="flex items-center gap-3 px-4 py-2.5 rounded-full text-on-surface-variant hover:text-primary hover:bg-white/5 transition-all" href="#">
+                    <span class="material-symbols-outlined">settings</span>
+                    <span class="font-body-md text-sm">Settings</span>
+                </a>
+                <!-- Sign Out -->
+                <a class="flex items-center gap-3 px-4 py-2.5 rounded-full text-on-surface-variant hover:text-red-400 hover:bg-red-500/10 transition-all" href="login.html">
+                    <span class="material-symbols-outlined">logout</span>
+                    <span class="font-body-md text-sm">Sign Out</span>
+                </a>
+            </nav>
+        </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <main class="flex-grow flex ml-0 md:ml-64 h-full relative">
+        <!-- Secondary Inner Sidebar (Conversation History) -->
+        <aside class="w-[280px] h-full bg-surface/20 backdrop-blur-lg border-r border-white/10 flex flex-col transition-all duration-300 relative z-30 shrink-0" id="history-sidebar">
+            <div class="p-6">
+                <button class="w-full flex items-center justify-center gap-2 py-2.5 px-4 rounded-full border border-white/20 hover:bg-white/5 transition-colors text-on-surface text-xs font-semibold" onclick="startNewChat()">
+                    <span class="material-symbols-outlined text-sm">add</span>
+                    <span>New Chat</span>
+                </button>
+            </div>
+            <div class="flex-grow overflow-y-auto px-4 pb-6 chat-scroll text-xs">
+                <!-- Group: Today -->
+                <div class="mb-6">
+                    <h3 class="font-semibold text-on-surface-variant px-2 mb-2 uppercase text-[10px] tracking-wider">Today</h3>
+                    <ul class="flex flex-col gap-1">
+                        <li>
+                            <button class="w-full text-left px-3 py-2 rounded-lg hover:bg-white/5 text-on-surface truncate text-sm transition-colors">Q3 Financials Summary</button>
+                        </li>
+                        <li>
+                            <button class="w-full text-left px-3 py-2 rounded-lg hover:bg-white/5 text-on-surface truncate text-sm transition-colors">Team Sync Agenda</button>
+                        </li>
+                    </ul>
+                </div>
+                <!-- Group: Yesterday -->
+                <div class="mb-6">
+                    <h3 class="font-semibold text-on-surface-variant px-2 mb-2 uppercase text-[10px] tracking-wider">Yesterday</h3>
+                    <ul class="flex flex-col gap-1">
+                        <li>
+                            <button class="w-full text-left px-3 py-2 rounded-lg hover:bg-white/5 text-on-surface truncate text-sm transition-colors">Drafting Elena's invite</button>
+                        </li>
+                    </ul>
+                </div>
+                <!-- Group: Previous 7 Days -->
+                <div>
+                    <h3 class="font-semibold text-on-surface-variant px-2 mb-2 uppercase text-[10px] tracking-wider">Previous 7 days</h3>
+                    <ul class="flex flex-col gap-1">
+                        <li>
+                            <button class="w-full text-left px-3 py-2 rounded-lg hover:bg-white/5 text-on-surface truncate text-sm transition-colors">Productivity analysis</button>
+                        </li>
+                        <li>
+                            <button class="w-full text-left px-3 py-2 rounded-lg hover:bg-white/5 text-on-surface truncate text-sm transition-colors">Weekly report generation</button>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Chat Interface -->
+        <section class="flex-grow flex flex-col h-full relative min-w-0">
+            <!-- Chat Header -->
+            <header class="h-16 border-b border-white/5 flex items-center justify-between px-6 bg-surface/40 backdrop-blur-md z-20">
+                <div class="flex items-center gap-3">
+                    <button class="md:hidden text-on-surface-variant hover:text-primary transition-colors" id="toggle-history">
+                        <span class="material-symbols-outlined">menu</span>
+                    </button>
+                    <h2 class="font-bold text-on-surface text-lg">Flow AI Assistant</h2>
+                    <div class="flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-primary/10 border border-primary/20">
+                        <span class="w-2 h-2 rounded-full bg-primary animate-pulse"></span>
+                        <span class="text-[10px] font-semibold text-primary">Online</span>
+                    </div>
+                </div>
+                <div class="flex items-center gap-4">
+                    <button class="text-on-surface-variant hover:text-primary transition-colors">
+                        <span class="material-symbols-outlined">more_horiz</span>
+                    </button>
+                </div>
+            </header>
+
+            <!-- Message Area -->
+            <div class="flex-grow overflow-y-auto p-6 md:p-10 flex flex-col gap-6 chat-scroll scroll-smooth" id="chat-messages">
+                <!-- Empty State / Suggestions (Visible initially) -->
+                <div class="flex flex-col items-center justify-center h-full max-w-2xl mx-auto w-full pt-10" id="empty-state">
+                    <div class="w-16 h-16 rounded-2xl bg-gradient-accent mb-6 flex items-center justify-center border-gradient shadow-[0_0_40px_rgba(208,188,255,0.3)]">
+                        <span class="material-symbols-outlined text-surface" style="font-size: 32px;">psychology</span>
+                    </div>
+                    <h2 class="text-2xl font-bold text-on-surface mb-2 text-center">How can I help you flow today?</h2>
+                    <p class="text-sm text-on-surface-variant mb-12 text-center">Your neural schedule and workspace are active.</p>
+                    
+                    <!-- Suggested Prompts Grid -->
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 w-full">
+                        <button class="glass-card p-4 rounded-2xl text-left hover:bg-white/5 transition-all group border-gradient hover:border-primary/50 relative overflow-hidden prompt-btn">
+                            <span class="material-symbols-outlined text-primary mb-2 text-md">summarize</span>
+                            <p class="font-bold text-xs text-on-surface">Summarize Q3 Financials</p>
+                            <p class="text-[10px] text-on-surface-variant mt-1">Get core insights from your PDF report.</p>
+                        </button>
+                        <button class="glass-card p-4 rounded-2xl text-left hover:bg-white/5 transition-all group border-gradient hover:border-primary/50 relative overflow-hidden prompt-btn">
+                            <span class="material-symbols-outlined text-secondary mb-2 text-md">edit_document</span>
+                            <p class="font-bold text-xs text-on-surface">Draft a follow-up email</p>
+                            <p class="text-[10px] text-on-surface-variant mt-1">Compose high-impact project recaps.</p>
+                        </button>
+                        <button class="glass-card p-4 rounded-2xl text-left hover:bg-white/5 transition-all group border-gradient hover:border-primary/50 relative overflow-hidden prompt-btn">
+                            <span class="material-symbols-outlined text-tertiary mb-2 text-md">event_available</span>
+                            <p class="font-bold text-xs text-on-surface">Optimize tomorrow's calendar</p>
+                            <p class="text-[10px] text-on-surface-variant mt-1">Identify deep work time windows.</p>
+                        </button>
+                        <button class="glass-card p-4 rounded-2xl text-left hover:bg-white/5 transition-all group border-gradient hover:border-primary/50 relative overflow-hidden prompt-btn">
+                            <span class="material-symbols-outlined text-primary mb-2 text-md" style="font-variation-settings: 'FILL' 1;">lightbulb</span>
+                            <p class="font-bold text-xs text-on-surface">Brainstorm marketing taglines</p>
+                            <p class="text-[10px] text-on-surface-variant mt-1">Generate quick taglines for FlowMind.</p>
+                        </button>
+                    </div>
+                </div>
+                <!-- Messages will be appended here via JS -->
+            </div>
+
+            <!-- Input Area (Sticky Bottom) -->
+            <div class="p-6 bg-gradient-to-t from-surface via-surface/90 to-transparent pt-4">
+                <div class="max-w-2xl mx-auto w-full">
+                    <!-- Action Row Tags -->
+                    <div class="flex gap-2 mb-4 overflow-x-auto pb-1 chat-scroll">
+                        <button onclick="fillPrompt('Summarize recent document')" class="whitespace-nowrap px-4 py-1.5 rounded-full border border-primary/30 text-primary text-xs font-semibold hover:bg-primary/10 transition-colors bg-surface/50 backdrop-blur-sm">Summarize File</button>
+                        <button onclick="fillPrompt('Draft follow-up email regarding design sync')" class="whitespace-nowrap px-4 py-1.5 rounded-full border border-white/10 text-on-surface-variant text-xs font-semibold hover:bg-white/5 transition-colors bg-surface/50 backdrop-blur-sm">Draft Email</button>
+                        <button onclick="fillPrompt('Schedule a meeting with Elena R.')" class="whitespace-nowrap px-4 py-1.5 rounded-full border border-white/10 text-on-surface-variant text-xs font-semibold hover:bg-white/5 transition-colors bg-surface/50 backdrop-blur-sm">Schedule Meeting</button>
+                        <button onclick="fillPrompt('Search active tasks')" class="whitespace-nowrap px-4 py-1.5 rounded-full border border-white/10 text-on-surface-variant text-xs font-semibold hover:bg-white/5 transition-colors bg-surface/50 backdrop-blur-sm">Search Tasks</button>
+                    </div>
+                    <!-- Input Bar -->
+                    <div class="relative glass-panel rounded-full flex items-center p-2 pl-4 focus-within:border-primary/50 transition-colors bg-[#050505]/80">
+                        <button onclick="alert('File Upload simulation')" class="p-2 text-on-surface-variant hover:text-primary transition-colors rounded-full hover:bg-white/5 shrink-0">
+                            <span class="material-symbols-outlined text-md">attach_file</span>
+                        </button>
+                        <input autocomplete="off" class="flex-grow bg-transparent border-none focus:ring-0 text-on-surface placeholder-on-surface-variant/50 px-2 text-sm" id="chat-input" placeholder="Message Flow AI..." type="text"/>
+                        <button onclick="alert('Voice recognition simulation')" class="p-2 text-on-surface-variant hover:text-primary transition-colors rounded-full hover:bg-white/5 mr-1 shrink-0">
+                            <span class="material-symbols-outlined text-md">mic</span>
+                        </button>
+                        <button class="w-9 h-9 rounded-full bg-gradient-accent flex items-center justify-center text-surface shadow-[0_0_15px_rgba(208,188,255,0.5)] hover:opacity-90 transition-opacity shrink-0" id="send-btn">
+                            <span class="material-symbols-outlined text-[18px]">arrow_upward</span>
+                        </button>
+                    </div>
+                    <p class="text-center text-on-surface-variant/40 text-[10px] mt-3">Flow AI can make mistakes. Consider verifying important information.</p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Templates for JS insertion -->
+    <template id="user-message-template">
+        <div class="flex gap-3 justify-end w-full animate-[fadeIn_0.3s_ease-out]">
+            <div class="max-w-[75%] glass-panel rounded-2xl rounded-tr-sm p-4 bg-primary/10 border-primary/20 text-sm">
+                <p class="text-on-surface message-text"></p>
+            </div>
+            <div class="w-8 h-8 rounded-full overflow-hidden shrink-0 border border-white/10">
+                <img class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAhkx7nJ_kR6dYL4gBEOoEXvzK1c4q5kSRQjxEQHQqPfy2e__lACtu65v4Wh1Mo3tyF3-cf-DfspG6y169mmaBZ4RGH6c-6hxBp0lD_czGh82mJ1Wjn_t-yo9VtYVjtn2akGA8BSvOqQxzkJox8ABnqi9Y1kO9KSTJz9Sk2r2Q2lnN31jlr9P7JZqchC2EygPhPf8CB5htcHStVilxcmV2mVyo5UZmbU0rZSpCgQWOUs-lio_DZ6MmM-5CqPxv7PXXZG0o8MCzsQS6V"/>
+            </div>
+        </div>
+    </template>
+    
+    <template id="ai-message-template">
+        <div class="flex gap-3 w-full animate-[fadeIn_0.5s_ease-out]">
+            <div class="w-8 h-8 rounded-full bg-gradient-accent flex items-center justify-center shrink-0 border-gradient">
+                <span class="material-symbols-outlined text-surface" style="font-size: 16px;">psychology</span>
+            </div>
+            <div class="max-w-[80%]">
+                <div class="glass-panel rounded-2xl rounded-tl-sm p-4 border-gradient text-sm leading-relaxed">
+                    <p class="text-on-surface message-text"></p>
+                </div>
+                <div class="flex items-center gap-2 mt-2 ml-2">
+                    <button class="p-1 text-on-surface-variant hover:text-primary transition-colors" onclick="alert('Copied to clipboard')"><span class="material-symbols-outlined text-xs">content_copy</span></button>
+                    <button class="p-1 text-on-surface-variant hover:text-primary transition-colors" onclick="alert('Liked')"><span class="material-symbols-outlined text-xs">thumb_up</span></button>
+                    <button class="p-1 text-on-surface-variant hover:text-error transition-colors" onclick="alert('Disliked')"><span class="material-symbols-outlined text-xs">thumb_down</span></button>
+                </div>
+            </div>
+        </div>
+    </template>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const chatInput = document.getElementById('chat-input');
+            const sendBtn = document.getElementById('send-btn');
+            const chatMessages = document.getElementById('chat-messages');
+            const emptyState = document.getElementById('empty-state');
+            
+            const userTemplate = document.getElementById('user-message-template');
+            const aiTemplate = document.getElementById('ai-message-template');
+
+            const toggleHistoryBtn = document.getElementById('toggle-history');
+            const historySidebar = document.getElementById('history-sidebar');
+
+            // Quick prompt buttons in grid
+            document.querySelectorAll('.prompt-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const text = btn.querySelector('.font-bold').innerText;
+                    handleSend(text);
+                });
+            });
+
+            // Toggle history sidebar (mobile)
+            if(toggleHistoryBtn) {
+                toggleHistoryBtn.addEventListener('click', () => {
+                    historySidebar.classList.toggle('hidden');
+                });
+            }
+
+            function handleSend(textOverride) {
+                const text = textOverride || chatInput.value.trim();
+                if (!text) return;
+
+                // Hide empty state suggestions grid
+                if (emptyState && emptyState.style.display !== 'none') {
+                    emptyState.style.display = 'none';
+                }
+
+                // Add User Message
+                const userClone = userTemplate.content.cloneNode(true);
+                userClone.querySelector('.message-text').textContent = text;
+                chatMessages.appendChild(userClone);
+                
+                chatInput.value = '';
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+
+                // Add simulated AI Typing loading state
+                const loadingContainer = document.createElement('div');
+                loadingContainer.className = 'flex gap-3 w-full animate-pulse';
+                loadingContainer.innerHTML = `
+                    <div class="w-8 h-8 rounded-full bg-gradient-accent flex items-center justify-center shrink-0">
+                        <span class="material-symbols-outlined text-surface" style="font-size: 16px;">psychology</span>
+                    </div>
+                    <div class="glass-panel rounded-2xl rounded-tl-sm p-4 text-xs text-on-surface-variant">Flow AI is typing...</div>
+                `;
+                chatMessages.appendChild(loadingContainer);
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+
+                // Simulate AI response
+                setTimeout(() => {
+                    chatMessages.removeChild(loadingContainer);
+                    const aiClone = aiTemplate.content.cloneNode(true);
+                    
+                    let response = "I've analyzed your request inside the FlowMind workspace. Here is what I generated:\n\n";
+                    if(text.toLowerCase().includes('summarize')) {
+                        response = "Here is the summary of the requested document:\n\n• **User Retention**: Up 15% quarter-over-quarter.\n• **Operational Efficiency**: Tasks are completing 12% faster since adopting AI flows.\n• **Recommendations**: Focus marketing efforts on the high-performing AI features.";
+                    } else if (text.toLowerCase().includes('email')) {
+                        response = "Here is the email draft:\n\n**Subject**: Next Steps - FlowMind Integration Sync\n\nHi Team,\n\nI've reviewed the design system logs and set up the task boards. Let's meet tomorrow to review the timeline.\n\nBest regards,\nAlex Mercer";
+                    } else if (text.toLowerCase().includes('calendar') || text.toLowerCase().includes('schedule')) {
+                        response = "Analyzing your schedule...\n\nI recommend blocking **Deep Work** tomorrow (Oct 27) between **10:00 AM and 12:00 PM**. This timeframe has zero conflicting meetings.";
+                    } else {
+                        response = `I'm ready to assist with that! You can upload files (PDFs, docs) or check tasks directly in the workspace. Let me know if you would like me to draft an email sync outline.`;
+                    }
+
+                    const pTag = aiClone.querySelector('.message-text');
+                    pTag.innerHTML = response.replace(/\n/g, '<br>');
+                    
+                    chatMessages.appendChild(aiClone);
+                    chatMessages.scrollTop = chatMessages.scrollHeight;
+                }, 1200);
+            }
+
+            window.fillPrompt = function(promptText) {
+                chatInput.value = promptText;
+                chatInput.focus();
+            };
+
+            window.startNewChat = function() {
+                chatMessages.innerHTML = '';
+                chatMessages.appendChild(emptyState);
+                emptyState.style.display = 'flex';
+            };
+
+            sendBtn.addEventListener('click', () => handleSend());
+            chatInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') handleSend();
+            });
+        });
+    </script>
+</body>
+</html>
