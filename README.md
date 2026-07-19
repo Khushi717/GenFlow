@@ -149,8 +149,3 @@ Configure the required Firebase and Gemini environment variables before deployin
 - Productivity analytics
 - Personalized AI recommendations
 
----
-
-
-B.Tech, Computer Science & Information Technology  
-KIET Group of Institutions
