@@ -529,7 +529,9 @@ export default function DashboardOverview() {
                   </div>
                   <div>
                     <h3 className="text-[15px] font-semibold text-white">AI Recommendation</h3>
-                    <p className="text-[11px] text-zinc-500">Based on today's workload</p>
+                    <p className="text-[11px] text-zinc-500">
+  {"Based on today's workload"}
+</p>
                   </div>
                 </div>
 

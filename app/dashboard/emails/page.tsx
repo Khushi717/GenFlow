@@ -500,7 +500,9 @@ export default function EmailGeneratorPage() {
                   </div>
                   <div className="bg-white/[0.02] rounded-xl p-3 border border-white/[0.05]">
                     <p className="text-[11px] text-zinc-500 mb-1">Original Prompt</p>
-                    <p className="text-xs text-zinc-300 leading-relaxed">"{selectedEmail.prompt}"</p>
+                    <p className="text-xs text-zinc-300 leading-relaxed">
+  &quot;{selectedEmail.prompt}&quot;
+</p>
                   </div>
                 </div>
 
